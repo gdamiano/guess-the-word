@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Guess The Word - Party Spoken Word Games</title>
+  <meta name="description" content="A mobile-friendly, pass-and-play group party game featuring Insider and Chameleon.">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app-container">
+    <header>
+      <h1 class="logo" id="app-logo">GUESS THE WORD</h1>
+      <p class="tagline">Pass & Play Party Games</p>
+    </header>
+
+    <main id="main-content">
+      <!-- SCREEN 1: Home / Game Selection -->
+      <section id="screen-home" class="screen">
+        <h2 style="font-family: var(--font-header); font-size: 1.5rem; margin-bottom: 20px; text-align: center;">Choose a Game</h2>
+        <div class="game-selector-grid">
+          <button class="game-card card-primary" id="select-game-chameleon" aria-label="Select Chameleon game">
+            <h3>Chameleon</h3>
+            <p>One player is the Chameleon who doesn't know the secret word. Everyone else knows it. Go around the room saying one related word. Don't get caught!</p>
+          </button>
+          
+          <button class="game-card card-secondary" id="select-game-insider" aria-label="Select Insider game">
+            <h3>Insider</h3>
+            <p>Only one player—the Insider—knows the secret word. The group asks yes/no questions to guess it. The Insider must help them without being identified!</p>
+          </button>
+        </div>
+      </section>
+
+      <!-- SCREEN 2: Game Setup -->
+      <section id="screen-setup" class="screen hidden">
+        <h2 id="setup-title" style="font-family: var(--font-header); font-size: 1.5rem; margin-bottom: 16px; text-align: center;">Game Setup</h2>
+        
+        <div class="form-group">
+          <label>Add Players (Min 3)</label>
+          <div id="players-setup-list" class="players-setup-list">
+            <!-- Dynamic player input rows will be added here -->
+          </div>
+          <button type="button" class="btn btn-secondary" id="btn-add-player" style="margin-top: 8px;">+ Add Player</button>
+        </div>
+
+        <div class="form-group">
+          <label>Select Category</label>
+          <div id="categories-grid" class="categories-grid">
+            <!-- Dynamic categories will be added here -->
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 12px; margin-top: auto;">
+          <button class="btn btn-secondary" id="btn-setup-back" style="flex: 1;">Back</button>
+          <button class="btn btn-cyan" id="btn-setup-start" style="flex: 2;">Start Setup</button>
+        </div>
+      </section>
+
+      <!-- SCREEN 3: Pass the Phone -->
+      <section id="screen-pass" class="screen hidden">
+        <div class="pass-screen-content">
+          <div class="pass-player-icon">📱</div>
+          <h2 style="font-family: var(--font-header); font-size: 1.6rem; color: var(--text-secondary);">Pass the phone to</h2>
+          <div class="pass-player-name" id="pass-player-target">Player 1</div>
+          <p style="color: var(--text-secondary); font-size: 0.9rem; max-width: 280px; margin-top: 10px;">Make sure no one else is looking at the screen!</p>
+          
+          <button class="btn" id="btn-pass-ready" style="margin-top: 24px;">I'm Ready</button>
+        </div>
+      </section>
+
+      <!-- SCREEN 4: Secret Reveal (Hold to Reveal or click) -->
+      <section id="screen-reveal" class="screen hidden">
+        <div class="pass-screen-content" id="reveal-tap-hold-container">
+          <div class="pass-player-icon" style="font-size: 3rem; margin-bottom: 10px;">🤫</div>
+          <h2 style="font-family: var(--font-header); font-size: 1.5rem; margin-bottom: 10px;" id="reveal-player-name">Player 1</h2>
+          
+          <div id="btn-hold-reveal" class="hold-reveal-btn">
+            Press & Hold<br>To Reveal
+          </div>
+          <p style="color: var(--text-secondary); font-size: 0.85rem; margin-top: 20px;">Press and hold down to view your secret role and word.</p>
+        </div>
+
+        <!-- Hidden content revealed only while holding/clicking -->
+        <div class="secret-reveal-card hidden" id="reveal-secret-content">
+          <h2 style="font-family: var(--font-header); font-size: 1.2rem; color: var(--text-secondary);" id="reveal-player-name-active">Player 1</h2>
+          <p style="font-size: 0.9rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px;">Your Role</p>
+          <div class="reveal-role" id="reveal-role-display">COMMON PLAYER</div>
+          
+          <div id="reveal-secret-word-section">
+            <p style="font-size: 0.9rem; color: var(--text-secondary); margin-top: 16px;">Secret Word</p>
+            <div class="secret-word-display" id="reveal-secret-word">APPLE</div>
+          </div>
+
+          <div id="reveal-category-section">
+            <p style="font-size: 0.9rem; color: var(--text-secondary);">Category: <strong id="reveal-category-name" style="color: white;">Animals</strong></p>
+          </div>
+
+          <!-- Chameleon Word Grid (only shown to Chameleon and common players for game reference if needed, but useful context) -->
+          <div id="reveal-grid-section" class="hidden">
+            <p style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 10px;">Word Grid:</p>
+            <div class="chameleon-word-grid" id="reveal-word-grid">
+              <!-- Word grid cells will be injected here -->
+            </div>
+          </div>
+
+          <button class="btn btn-cyan" id="btn-reveal-done" style="margin-top: 24px;">Got It (Hide)</button>
+        </div>
+      </section>
+
+      <!-- SCREEN 5: Active Game Screen -->
+      <section id="screen-game" class="screen hidden">
+        <h2 id="game-active-title" style="font-family: var(--font-header); font-size: 1.5rem; text-align: center; margin-bottom: 16px;">Chameleon Round</h2>
+        
+        <div class="timer-container">
+          <div class="timer-circle active" id="game-timer-circle">
+            <span class="timer-text" id="game-timer-text">3:00</span>
+          </div>
+        </div>
+
+        <!-- Chameleon Grid (Visible to all during the discussion round) -->
+        <div id="game-chameleon-view" class="hidden">
+          <p style="color: var(--text-secondary); font-size: 0.85rem; text-align: center; margin-bottom: 12px;">
+            Go around the room saying <strong>one related word</strong>.
+          </p>
+          <div class="chameleon-word-grid" id="game-word-grid">
+            <!-- 16-word grid will go here -->
+          </div>
+          <p style="color: var(--text-secondary); font-size: 0.85rem; text-align: center; margin-top: 8px;">
+            Category: <strong id="game-category-display" style="color: var(--secondary);">Animals</strong>
+          </p>
+        </div>
+
+        <!-- Insider View (Timer and secret word helper) -->
+        <div id="game-insider-view" class="hidden" style="text-align: center;">
+          <p style="color: var(--text-secondary); font-size: 0.9rem; line-height: 1.5; margin-bottom: 20px;">
+            Ask Yes/No questions to find the secret word! The Insider must guide you.
+          </p>
+          
+          <button class="btn btn-secondary" id="btn-insider-reveal-word" style="max-width: 220px; margin: 0 auto 20px;">
+            Hold to See Secret Word
+          </button>
+          
+          <!-- Peek overlay for Insider -->
+          <div id="insider-peek-overlay" class="hidden" style="background: rgba(15, 23, 42, 0.95); border-radius: var(--border-radius-md); padding: 16px; border: 1px dashed var(--primary); margin-bottom: 20px;">
+            <p style="font-size: 0.8rem; color: var(--text-secondary);">Secret Word:</p>
+            <div class="secret-word-display" id="game-insider-secret-word" style="font-size: 1.8rem; margin: 8px 0;">???</div>
+            <p style="font-size: 0.8rem; color: var(--text-secondary);">Category: <strong id="game-insider-category" style="color: white;">???</strong></p>
+          </div>
+        </div>
+
+        <button class="btn btn-accent" id="btn-game-to-voting" style="margin-top: auto;">Go to Voting</button>
+      </section>
+
+      <!-- SCREEN 6: Voting Screen -->
+      <section id="screen-voting" class="screen hidden">
+        <h2 id="voting-title" style="font-family: var(--font-header); font-size: 1.6rem; text-align: center; margin-bottom: 8px;">Time to Vote!</h2>
+        <p id="voting-desc" style="color: var(--text-secondary); font-size: 0.9rem; text-align: center; margin-bottom: 20px; line-height: 1.4;">
+          Discuss as a group and select the player you want to vote out.
+        </p>
+
+        <!-- Insider Specific Guessed Question -->
+        <div id="voting-insider-question" class="hidden" style="text-align: center; margin-bottom: 24px;">
+          <p style="font-size: 1.1rem; margin-bottom: 16px; font-weight: 500;">Did the group guess the secret word before time ran out?</p>
+          <div style="display: flex; gap: 12px;">
+            <button class="btn btn-secondary" id="btn-voting-insider-failed" style="flex: 1; border-color: var(--error); color: var(--error);">No, We Failed</button>
+            <button class="btn btn-cyan" id="btn-voting-insider-success" style="flex: 1;">Yes, We Guessed It!</button>
+          </div>
+        </div>
+
+        <div id="voting-players-section">
+          <label id="voting-players-label">Select Voted Player</label>
+          <div class="voting-list" id="voting-players-list">
+            <!-- Dynamic player buttons will be added here -->
+          </div>
+        </div>
+      </section>
+
+      <!-- SCREEN 7: Chameleon Escape Grid (Final Guess) -->
+      <section id="screen-escape" class="screen hidden">
+        <div style="text-align: center; margin-bottom: 20px;">
+          <h2 style="font-family: var(--font-header); font-size: 1.6rem; color: var(--secondary); margin-bottom: 8px;">Chameleon Caught!</h2>
+          <p style="color: var(--text-secondary); font-size: 0.9rem; line-height: 1.4;">
+            <strong id="escape-chameleon-name" style="color: white;">Player 2</strong> was the Chameleon! They get one final chance to escape.
+          </p>
+          <p style="color: var(--secondary); font-size: 0.95rem; font-weight: 600; margin-top: 12px;">
+            Chameleon: Guess the secret word to win!
+          </p>
+        </div>
+
+        <div class="chameleon-word-grid" id="escape-word-grid" style="margin-bottom: 24px;">
+          <!-- Word grid cells for Chameleon to guess -->
+        </div>
+
+        <p style="color: var(--text-secondary); font-size: 0.8rem; text-align: center;">
+          Category: <strong id="escape-category-display" style="color: white;">Animals</strong>
+        </p>
+      </section>
+
+      <!-- SCREEN 8: Game Results -->
+      <section id="screen-results" class="screen hidden">
+        <div class="results-card">
+          <div class="outcome-text" id="results-outcome">VICTORY</div>
+          
+          <div class="outcome-reveal-details" id="results-details">
+            <!-- Winner text, roles, secret words, etc. will go here -->
+          </div>
+
+          <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid var(--card-border); border-radius: var(--border-radius-md); padding: 16px; margin-bottom: 30px; text-align: left;">
+            <h3 style="font-family: var(--font-header); font-size: 1rem; margin-bottom: 10px; color: var(--text-secondary); border-bottom: 1px solid var(--card-border); padding-bottom: 6px;">Roles Reveal:</h3>
+            <ul id="results-roles-list" style="list-style: none; display: flex; flex-direction: column; gap: 8px; font-size: 0.9rem;">
+              <!-- Dynamic reveal lists -->
+            </ul>
+          </div>
+
+          <button class="btn btn-cyan" id="btn-results-restart">Play Again</button>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>
