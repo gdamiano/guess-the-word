@@ -58,7 +58,8 @@
           <div id="roles-config-list" style="overflow-y: auto; flex-grow: 1; min-height: 0; padding-right: 4px;">
             <!-- Shepherd (Fixed to 1) -->
             <div class="setup-row role-row">
-              <div>
+              <img class="role-row-img" src="assets/portrait_shepherd_neutral.png" alt="Shepherd">
+              <div class="role-row-info">
                 <span class="setup-label">Shepherd</span>
                 <p class="role-desc">knows the secret word and answers questions.</p>
               </div>
@@ -70,7 +71,8 @@
             </div>
             <!-- Wolves -->
             <div class="setup-row role-row">
-              <div>
+              <img class="role-row-img" src="assets/portrait_wolf_happy.png" onerror="this.onerror=null; this.src='assets/portrait_wolf_neutral.png';" alt="Wolf">
+              <div class="role-row-info">
                 <span class="setup-label">Wolves</span>
                 <p class="role-desc">know the secret word and want to mislead.</p>
               </div>
@@ -82,7 +84,8 @@
             </div>
             <!-- Sheepdog -->
             <div class="setup-row role-row">
-              <div>
+              <img class="role-row-img" src="assets/portrait_sheepdog_happy.png" onerror="this.onerror=null; this.src='assets/portrait_sheep_neutral.png';" alt="Sheepdog">
+              <div class="role-row-info">
                 <span class="setup-label">Sheepdog</span>
                 <p class="role-desc">confirms the Flock's final votes.</p>
               </div>
@@ -94,7 +97,8 @@
             </div>
             <!-- Secret Sheepdog -->
             <div class="setup-row role-row">
-              <div>
+              <img class="role-row-img" src="assets/portrait_secret_sheepdog_neutral.png" onerror="this.onerror=null; this.src='assets/portrait_secret_sheepdog.png';" alt="Secret Sheepdog">
+              <div class="role-row-info">
                 <span class="setup-label">Secret Sheepdog</span>
                 <p class="role-desc">votes on wolves but is unknown.</p>
               </div>
@@ -127,8 +131,8 @@
         <!-- SCREEN 5: How To Play -->
         <section id="screen-how-to-play" class="screen hidden">
           <h2 id="how-to-play-title" class="screen-title">HOW TO PLAY</h2>
-          <div class="how-to-play-content">
-            <p id="how-to-play-desc" class="mode-description" style="font-size:1.1rem; line-height:1.6;"></p>
+          <div id="how-to-play-list" class="how-to-play-list" style="overflow-y: auto; flex-grow: 1; min-height: 0; padding-right: 4px;">
+            <!-- Populated dynamically by app.js -->
           </div>
           <div class="flex-spacer"></div>
           <div class="action-bar-bottom">

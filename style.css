@@ -285,7 +285,24 @@ p.mode-description strong {
 }
 
 .role-row {
-  align-items: flex-start;
+  align-items: center;
+}
+
+.role-row-img {
+  width: 44px;
+  height: 44px;
+  border-radius: 8px;
+  object-fit: cover;
+  flex-shrink: 0;
+  background-color: #f1f5f9;
+}
+
+.role-row-info {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  margin-left: 12px;
+  min-width: 0;
 }
 
 .role-desc {
@@ -446,16 +463,71 @@ p.mode-description strong {
 /* Scoreboard List */
 .score-row {
   display: flex;
-  justify-content: space-between;
+  align-items: center;
   padding: 12px 8px;
   border-bottom: 1px solid #e2e8f0;
   font-size: 1.1rem;
 }
+.score-row-img {
+  width: 44px;
+  height: 44px;
+  border-radius: 8px;
+  object-fit: cover;
+  flex-shrink: 0;
+  background-color: #f1f5f9;
+}
+.score-row-info {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  margin-left: 12px;
+  min-width: 0;
+}
 .score-row-name {
   font-weight: 600;
+}
+.score-row-reason {
+  font-size: 0.8rem;
+  color: var(--theme-color-dark);
+  margin-top: 2px;
 }
 .score-row-pts {
   font-weight: 700;
   font-family: var(--font-header);
   color: var(--theme-color-dark);
+  margin-left: 12px;
+  flex-shrink: 0;
 }
+
+/* How To Play screen */
+.how-to-play-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.how-to-play-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background-color: var(--color-bg-pattern);
+  border-radius: 12px;
+  padding: 12px;
+  border: 1px solid #e2e8f0;
+}
+.how-to-play-row-img {
+  width: 44px;
+  height: 44px;
+  border-radius: 8px;
+  object-fit: cover;
+  flex-shrink: 0;
+  background-color: #f1f5f9;
+}
+.how-to-play-row-text {
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--color-text-body);
+  line-height: 1.4;
+  margin: 0;
+}
+

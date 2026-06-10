@@ -83,3 +83,28 @@ const STRINGS = {
     }
   }
 };
+
+const PORTRAIT_CONFIG = {
+  ask_the_expert_team_win: "portrait_sheep_happy.png",
+  ask_the_expert_team_lose: "portrait_sheep_angry.png",
+  ask_the_expert_spy_win: "portrait_wolf_happy.png",
+  ask_the_expert_spy_lose: "portrait_wolf_angry.png",
+  ask_the_expert_hunter_win: "portrait_sheep_happy.png",
+  ask_the_expert_hunter_lose: "portrait_sheep_angry.png",
+  ask_the_expert_secret_hunter_win: "portrait_secret_sheepdog_neutral.png",
+  ask_the_expert_secret_hunter_lose: "portrait_secret_sheepdog_neutral.png",
+  ask_the_expert_expert_win: "portrait_shepherd_neutral.png",
+  ask_the_expert_expert_lose: "portrait_shepherd_neutral.png"
+};
+
+const HOW_TO_PLAY_CONFIG = {
+  MODE_ONE_EXPERT: [
+    { text: "The Shepherd knows the secret word.", image: "portrait_shepherd_neutral.png", fallback: "portrait_shepherd_neutral.png" },
+    { text: "Each player asks the Shepherd one yes/no question.", image: "portrait_sheep_neutral.png", fallback: "portrait_sheep_neutral.png" },
+    { text: "When everyone has a turn, vote on what the word could be!", image: "portrait_sheep_happy.png", fallback: "portrait_sheep_neutral.png" },
+    { text: "Wolves secretly try to mislead the flock.", image: "portrait_wolf_happy.png", fallback: "portrait_wolf_neutral.png" },
+    { text: "After the round, guess who played the wolves!", image: "portrait_sheepdog_happy.png", fallback: "portrait_sheep_neutral.png" }
+  ]
+};
+
+

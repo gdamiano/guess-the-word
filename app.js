@@ -376,7 +376,42 @@ document.getElementById('btn-setup-topics-next').addEventListener('click', () =>
   state.selectedTopics = selectedOpts;
   
   // Show How to Play screen now (Feedback 1)
-  document.getElementById('how-to-play-desc').textContent = STRINGS.MODES[state.selectedGame].how_to_play_desc;
+  const modeId = state.selectedGame;
+  const container = document.getElementById('how-to-play-list');
+  container.innerHTML = '';
+  
+  const config = HOW_TO_PLAY_CONFIG[modeId];
+  if (config && config.length > 0) {
+    config.forEach(item => {
+      const row = document.createElement('div');
+      row.className = 'how-to-play-row';
+      
+      const img = document.createElement('img');
+      img.className = 'how-to-play-row-img';
+      img.src = `assets/${item.image}`;
+      img.alt = "";
+      img.onerror = () => {
+        img.src = `assets/${item.fallback || 'portrait_sheep_neutral.png'}`;
+        img.onerror = null;
+      };
+      
+      const text = document.createElement('p');
+      text.className = 'how-to-play-row-text';
+      text.textContent = item.text;
+      
+      row.appendChild(img);
+      row.appendChild(text);
+      container.appendChild(row);
+    });
+  } else {
+    // Fallback to plain text if config doesn't exist
+    const p = document.createElement('p');
+    p.className = 'mode-description';
+    p.style.fontSize = '1.1rem';
+    p.style.lineHeight = '1.6';
+    p.textContent = STRINGS.MODES[modeId].how_to_play_desc || "";
+    container.appendChild(p);
+  }
   showScreen('howToPlay');
 });
 
@@ -667,13 +702,46 @@ function initScoreboard() {
   
   const sortedPlayers = [...state.players].sort((a, b) => globalScores[b] - globalScores[a]);
   
+  const roleToConfigTerm = {
+    'FLOCK': 'team',
+    'WOLF': 'spy',
+    'SHEEPDOG': 'hunter',
+    'SECRET_SHEEPDOG': 'secret_hunter',
+    'SHEPHERD': 'expert'
+  };
+
+  const fallbackImages = {
+    'FLOCK': 'portrait_sheep_neutral.png',
+    'WOLF': 'portrait_wolf_neutral.png',
+    'SHEEPDOG': 'portrait_sheepdog_happy.png',
+    'SECRET_SHEEPDOG': 'portrait_secret_sheepdog.png',
+    'SHEPHERD': 'portrait_shepherd_neutral.png'
+  };
+
   sortedPlayers.forEach(p => {
     const row = document.createElement('div');
     row.className = 'score-row';
     
+    // Create portrait image
+    const role = state.roles[p];
+    const isFlockRole = (role !== 'WOLF');
+    const isWin = (isFlockRole === state.wordGuessedCorrectly);
+    const outcome = isWin ? 'win' : 'lose';
+    const configKey = `ask_the_expert_${roleToConfigTerm[role] || 'team'}_${outcome}`;
+    const filename = PORTRAIT_CONFIG[configKey] || fallbackImages[role] || 'portrait_sheep_neutral.png';
+
+    const imgEl = document.createElement('img');
+    imgEl.className = 'score-row-img';
+    imgEl.src = `assets/${filename}`;
+    imgEl.alt = `${p}'s portrait`;
+    imgEl.onerror = () => {
+      imgEl.src = `assets/${fallbackImages[role] || 'portrait_sheep_neutral.png'}`;
+      imgEl.onerror = null; // Prevent infinite loop in case fallback is also missing
+    };
+    row.appendChild(imgEl);
+
     const nameCol = document.createElement('div');
-    nameCol.style.display = 'flex';
-    nameCol.style.flexDirection = 'column';
+    nameCol.className = 'score-row-info';
     
     const nameEl = document.createElement('span');
     nameEl.className = 'score-row-name';
@@ -686,9 +754,6 @@ function initScoreboard() {
       const reasonEl = document.createElement('span');
       reasonEl.className = 'score-row-reason';
       reasonEl.textContent = reasonText;
-      reasonEl.style.fontSize = '0.8rem';
-      reasonEl.style.color = 'var(--theme-color-dark)';
-      reasonEl.style.marginTop = '2px';
       nameCol.appendChild(reasonEl);
     }
     
