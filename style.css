@@ -20,14 +20,18 @@
   --font-body: 'Inter', sans-serif;
 }
 
-.theme-blue {
+body.theme-blue {
   --theme-color: #38bdf8;
   --theme-color-dark: #0284c7;
 }
 
-.theme-pink {
+body.theme-pink {
   --theme-color: #f472b6;
   --theme-color-dark: #db2777;
+}
+
+.hidden {
+  display: none !important;
 }
 
 * {
@@ -46,14 +50,13 @@ body, html {
   height: 100%;
   width: 100%;
   overflow: hidden; /* Single screen lock */
-  background-color: var(--color-bg-pattern);
-  background-image: radial-gradient(#cbd5e1 1.5px, transparent 1.5px);
-  background-size: 20px 20px;
+  background-color: var(--theme-color);
   font-family: var(--font-body);
   color: var(--color-dark);
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: background-color 0.3s ease;
 }
 
 #root-app {
@@ -315,21 +318,66 @@ p.mode-description strong {
   transition: border-color 0.2s ease;
 }
 
-.player-input:focus {
-  border-bottom-color: var(--theme-color);
+.player-input-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 12px;
+  background-color: var(--color-white);
+  border-radius: 8px;
+  padding: 4px 12px;
+  border: 2px solid #e2e8f0;
+  transition: border-color 0.2s ease, opacity 0.2s ease;
+}
+
+.player-input-row.dragging {
+  opacity: 0.5;
+  border-style: dashed;
+}
+
+.drag-handle {
+  cursor: grab;
+  margin-right: 8px;
+  font-size: 1.2rem;
+  color: var(--color-text-muted);
+}
+
+.player-input-row .player-input {
+  flex-grow: 1;
+  margin-bottom: 0;
+  border-bottom: none !important;
+}
+
+.btn-up-shift {
+  background: none;
+  border: none;
+  font-size: 1.4rem;
+  font-weight: bold;
+  cursor: pointer;
+  color: var(--theme-color-dark);
+  margin-left: 8px;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-up-shift:hover {
+  transform: scale(1.1);
 }
 
 /* Topics Grid */
 .topics-grid {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
 }
 
 .topic-option {
   display: flex;
   align-items: center;
-  padding: 12px;
+  justify-content: center;
+  text-align: center;
+  padding: 16px 12px;
   border: 2px solid #e2e8f0;
   border-radius: 8px;
   cursor: pointer;

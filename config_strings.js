@@ -16,8 +16,8 @@ const STRINGS = {
   BTN_THEY_GOT_IT: "They got the word",
   BTN_TRY_AGAIN: "Try Again",
 
-  TXT_HOLD_TO_VIEW: "HOLD TO VIEW\nthe secret word",
-  TXT_PRESS_PASS: "PRESS & PASS THE PHONE",
+  TXT_HOLD_TO_VIEW: "HOLD TO VIEW\nyour secret",
+  TXT_PRESS_PASS: "I'M READY!",
   TXT_IM_SHEPHERD: "I'm the Shepherd!",
 
   MODES: {
@@ -35,27 +35,32 @@ const STRINGS = {
         SHEPHERD: {
           id: "SHEPHERD",
           name: "Shepherd",
-          desc: "The Shepherd knows the secret word and answers the Flock's questions."
+          desc: "knows the secret word and answers questions.",
+          instruction: "You know the answer!\nAnswer: "
         },
         FLOCK: {
           id: "FLOCK",
           name: "Flock",
-          desc: "You're in the flock! Ask the Shepherd a question on your turn. Try to guess the right word, and don't be fooled by wolves!"
+          desc: "asks questions to guess the word.",
+          instruction: "You're on the team.\nAnswer: Unknown"
         },
         WOLF: {
           id: "WOLF",
-          name: "Wolves",
-          desc: "The Wolves know the secret word and want to make the Flock guess the wrong word."
+          name: "Wolf",
+          desc: "knows the secret word and wants to mislead.",
+          instruction: "You're a wolf.\nAnswer: "
         },
         SHEEPDOG: {
           id: "SHEEPDOG",
           name: "Sheepdog",
-          desc: "The Sheepdog confirms the Flock's final votes for the secret word and the wolves."
+          desc: "confirms the Flock's final votes.",
+          instruction: "You're the main Sheepdog! Ask a question to help learn the secret answer, and help vote for the answer and the wolf at the end of the round.\nAnswer: Unknown"
         },
         SECRET_SHEEPDOG: {
           id: "SECRET_SHEEPDOG",
           name: "Secret Sheepdog",
-          desc: "The Secret Sheepdog votes on who is a wolf, but it isn't known he's a Sheepdog."
+          desc: "votes on wolves but is unknown.",
+          instruction: "You're on the team.\nAnswer: Unknown"
         }
       },
       SCORING: {

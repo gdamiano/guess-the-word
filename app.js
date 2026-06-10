@@ -5,6 +5,7 @@ const state = {
   selectedGame: null, // 'MODE_ONE_EXPERT'
   players: [],
   playerCount: 4,
+  shepherdIndex: 0, // Track active Shepherd in the circle
   rolesConfig: {
     SHEPHERD: 1, // Fixed
     WOLF: 1,
@@ -32,6 +33,7 @@ const screens = {
   howToPlay: document.getElementById('screen-how-to-play'),
   handTo: document.getElementById('screen-hand-to'),
   planning: document.getElementById('screen-planning'),
+  handBackShepherd: document.getElementById('screen-hand-back-shepherd'),
   mainPlay: document.getElementById('screen-main-play'),
   endRound: document.getElementById('screen-end-round'),
   scoreboard: document.getElementById('screen-scoreboard')
@@ -70,6 +72,9 @@ function initApp() {
   
   selectMode('MODE_ONE_EXPERT');
   showScreen('home');
+  
+  // Setup drag-and-drop on the player inputs list
+  makeListDraggable(document.getElementById('players-input-list'));
 }
 
 function selectMode(modeId) {
@@ -86,7 +91,9 @@ function selectMode(modeId) {
     document.getElementById('btn-mode-expert').classList.remove('active');
   }
   
-  appFrame.className = `app-frame ${modeData.themeClass}`;
+  // Shift classes to body instead of appFrame
+  document.body.className = modeData.themeClass;
+  appFrame.className = 'app-frame';
 }
 
 document.getElementById('btn-mode-expert').addEventListener('click', () => selectMode('MODE_ONE_EXPERT'));
@@ -107,14 +114,13 @@ document.getElementById('btn-home-start').addEventListener('click', () => {
     alert("Only Ask the Shepherd is implemented for now!");
     return;
   }
-  // Show How to Play first
-  document.getElementById('how-to-play-desc').textContent = STRINGS.MODES[state.selectedGame].how_to_play_desc;
-  showScreen('howToPlay');
+  // Immediately show players setup
+  initSetupPlayers();
 });
 
-document.getElementById('btn-how-to-play-cancel').addEventListener('click', () => showScreen('home'));
+document.getElementById('btn-how-to-play-cancel').addEventListener('click', () => showScreen('setupTopics'));
 document.getElementById('btn-how-to-play-play').addEventListener('click', () => {
-  initSetupPlayers();
+  startGame();
 });
 
 // ==========================================
@@ -130,17 +136,146 @@ function renderPlayerInputs() {
   const container = document.getElementById('players-input-list');
   
   // Retain existing values if possible
-  const currentValues = Array.from(container.querySelectorAll('input')).map(inp => inp.value);
+  const currentValues = Array.from(container.querySelectorAll('.player-input')).map(inp => inp.value);
   container.innerHTML = '';
   
   for (let i = 0; i < state.playerCount; i++) {
+    const val = currentValues[i] || `Player ${i + 1}`;
+    
+    const row = document.createElement('div');
+    row.className = 'player-input-row';
+    row.draggable = true;
+    row.dataset.index = i;
+    
+    const handle = document.createElement('span');
+    handle.className = 'drag-handle';
+    handle.textContent = '☰';
+    
     const inp = document.createElement('input');
     inp.type = 'text';
     inp.className = 'player-input';
     inp.placeholder = `Player ${i + 1}`;
-    inp.value = currentValues[i] || `Player ${i + 1}`;
-    container.appendChild(inp);
+    inp.value = val;
+    
+    const upBtn = document.createElement('button');
+    upBtn.className = 'btn-up-shift';
+    upBtn.textContent = '↑';
+    upBtn.type = 'button';
+    upBtn.title = "Make Player 1";
+    upBtn.addEventListener('click', (e) => {
+      const rowEl = e.target.closest('.player-input-row');
+      const parentEl = rowEl.parentNode;
+      const index = Array.from(parentEl.children).indexOf(rowEl);
+      makePlayerFirst(index);
+    });
+    
+    row.appendChild(handle);
+    row.appendChild(inp);
+    row.appendChild(upBtn);
+    container.appendChild(row);
   }
+}
+
+function makePlayerFirst(idx) {
+  const container = document.getElementById('players-input-list');
+  const inputs = Array.from(container.querySelectorAll('.player-input')).map(inp => inp.value);
+  const rotated = inputs.slice(idx).concat(inputs.slice(0, idx));
+  
+  const rows = container.querySelectorAll('.player-input-row');
+  rows.forEach((row, i) => {
+    const inp = row.querySelector('.player-input');
+    inp.value = rotated[i];
+    inp.placeholder = `Player ${i + 1}`;
+  });
+}
+
+function makeListDraggable(container) {
+  let dragEl = null;
+
+  // Mouse Drag
+  container.addEventListener('dragstart', (e) => {
+    const row = e.target.closest('.player-input-row');
+    if (row) {
+      dragEl = row;
+      row.classList.add('dragging');
+    }
+  });
+
+  container.addEventListener('dragend', (e) => {
+    const row = e.target.closest('.player-input-row');
+    if (row) {
+      row.classList.remove('dragging');
+    }
+    dragEl = null;
+    renumberPlaceholders();
+  });
+
+  container.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    if (!dragEl) return;
+    const afterElement = getDragAfterElement(container, e.clientY);
+    if (afterElement == null) {
+      container.appendChild(dragEl);
+    } else {
+      container.insertBefore(dragEl, afterElement);
+    }
+  });
+
+  // Touch Drag (Mobile)
+  let touchStartEl = null;
+  container.addEventListener('touchstart', (e) => {
+    if (e.target.classList.contains('drag-handle')) {
+      const row = e.target.closest('.player-input-row');
+      if (row) {
+        touchStartEl = row;
+        row.classList.add('dragging');
+        e.preventDefault();
+      }
+    }
+  }, { passive: false });
+
+  container.addEventListener('touchmove', (e) => {
+    if (!touchStartEl) return;
+    e.preventDefault();
+    const touch = e.touches[0];
+    const afterElement = getDragAfterElement(container, touch.clientY);
+    if (afterElement == null) {
+      container.appendChild(touchStartEl);
+    } else {
+      container.insertBefore(touchStartEl, afterElement);
+    }
+  }, { passive: false });
+
+  container.addEventListener('touchend', (e) => {
+    if (touchStartEl) {
+      touchStartEl.classList.remove('dragging');
+      touchStartEl = null;
+      renumberPlaceholders();
+    }
+  });
+}
+
+function getDragAfterElement(container, y) {
+  const draggableElements = [...container.querySelectorAll('.player-input-row:not(.dragging)')];
+
+  return draggableElements.reduce((closest, child) => {
+    const box = child.getBoundingClientRect();
+    const offset = y - box.top - box.height / 2;
+    if (offset < 0 && offset > closest.offset) {
+      return { offset: offset, element: child };
+    } else {
+      return closest;
+    }
+  }, { offset: Number.NEGATIVE_INFINITY }).element;
+}
+
+function renumberPlaceholders() {
+  const rows = document.getElementById('players-input-list').querySelectorAll('.player-input-row');
+  rows.forEach((row, i) => {
+    row.dataset.index = i;
+    const input = row.querySelector('.player-input');
+    input.placeholder = `Player ${i + 1}`;
+  });
 }
 
 document.getElementById('btn-players-plus').addEventListener('click', () => {
@@ -210,7 +345,7 @@ function initSetupTopics() {
   if (container.children.length === 0) {
     Object.keys(wordCategories).forEach(cat => {
       const opt = document.createElement('div');
-      opt.className = 'topic-option selected';
+      opt.className = 'topic-option'; // Start unselected
       opt.textContent = cat;
       opt.dataset.topic = cat;
       opt.addEventListener('click', () => {
@@ -218,6 +353,9 @@ function initSetupTopics() {
       });
       container.appendChild(opt);
     });
+  } else {
+    // Reset selections on subsequent rounds
+    Array.from(container.children).forEach(opt => opt.classList.remove('selected'));
   }
   showScreen('setupTopics');
 }
@@ -235,7 +373,10 @@ document.getElementById('btn-setup-topics-next').addEventListener('click', () =>
     return;
   }
   state.selectedTopics = selectedOpts;
-  startGame();
+  
+  // Show How to Play screen now (Feedback 1)
+  document.getElementById('how-to-play-desc').textContent = STRINGS.MODES[state.selectedGame].how_to_play_desc;
+  showScreen('howToPlay');
 });
 
 // ==========================================
@@ -250,12 +391,22 @@ function startGame() {
   state.secretWord = state.words[Math.floor(Math.random() * state.words.length)];
 
   // 2. Assign Roles
-  // Player 1 is Shepherd
   state.roles = {};
-  const shepherdPlayer = state.players[0];
+  
+  // Set Shepherd (active shepherd index in the circle)
+  const shepherdPlayer = state.players[state.shepherdIndex];
   state.roles[shepherdPlayer] = 'SHEPHERD';
   
-  const pool = state.players.slice(1);
+  // Set Sheepdog (index next to Shepherd in circle order, if configured) (Feedback 14)
+  let sheepdogPlayer = null;
+  if (state.rolesConfig.SHEEPDOG > 0) {
+    const sheepdogIdx = (state.shepherdIndex + 1) % state.players.length;
+    sheepdogPlayer = state.players[sheepdogIdx];
+    state.roles[sheepdogPlayer] = 'SHEEPDOG';
+  }
+  
+  // Shuffled pool for remaining roles
+  const pool = state.players.filter(p => p !== shepherdPlayer && p !== sheepdogPlayer);
   // Fisher-Yates shuffle
   for (let i = pool.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
@@ -263,10 +414,15 @@ function startGame() {
   }
   
   let pIdx = 0;
-  for (let i = 0; i < state.rolesConfig.WOLF; i++) { state.roles[pool[pIdx++]] = 'WOLF'; }
-  for (let i = 0; i < state.rolesConfig.SHEEPDOG; i++) { state.roles[pool[pIdx++]] = 'SHEEPDOG'; }
-  for (let i = 0; i < state.rolesConfig.SECRET_SHEEPDOG; i++) { state.roles[pool[pIdx++]] = 'SECRET_SHEEPDOG'; }
-  while (pIdx < pool.length) { state.roles[pool[pIdx++]] = 'FLOCK'; }
+  for (let i = 0; i < state.rolesConfig.WOLF; i++) {
+    if (pIdx < pool.length) state.roles[pool[pIdx++]] = 'WOLF';
+  }
+  for (let i = 0; i < state.rolesConfig.SECRET_SHEEPDOG; i++) {
+    if (pIdx < pool.length) state.roles[pool[pIdx++]] = 'SECRET_SHEEPDOG';
+  }
+  while (pIdx < pool.length) {
+    state.roles[pool[pIdx++]] = 'FLOCK';
+  }
 
   // 3. Reset Round State
   state.triesLeft = 3;
@@ -281,15 +437,12 @@ function startGame() {
 // 5. PASS & PLAY / PLANNING
 // ==========================================
 function showHandToScreen() {
-  const activePlayer = state.players[state.passIndex];
+  // Offset by shepherdIndex so phone starts with Shepherd and goes in circle order (Feedback 14/21)
+  const activePlayer = state.players[(state.shepherdIndex + state.passIndex) % state.players.length];
   document.getElementById('hand-to-player-name').textContent = activePlayer;
   
-  // The first player is the Shepherd
-  if (state.passIndex === 0) {
-    document.getElementById('btn-hand-to-ready').textContent = STRINGS.TXT_IM_SHEPHERD;
-  } else {
-    document.getElementById('btn-hand-to-ready').textContent = "I'm Ready!";
-  }
+  // Button says "I'm [Player Name]" instead of a role name (Feedback 9)
+  document.getElementById('btn-hand-to-ready').textContent = `I'm ${activePlayer}`;
   
   showScreen('handTo');
 }
@@ -299,32 +452,22 @@ document.getElementById('btn-hand-to-ready').addEventListener('click', () => {
 });
 
 function initPlanningScreen() {
-  const activePlayer = state.players[state.passIndex];
+  const activePlayer = state.players[(state.shepherdIndex + state.passIndex) % state.players.length];
   const roleKey = state.roles[activePlayer];
   const roleConfig = STRINGS.MODES[state.selectedGame].roles[roleKey];
   
-  document.getElementById('planning-role-name').textContent = `THE ${roleConfig.name.toUpperCase()}`;
-  document.getElementById('planning-role-desc').textContent = roleConfig.desc;
-  
-  // Handle secret word box contents based on role
-  // Wolves, Shepherd, Sheepdog(?) know the word.
-  // Wait, does Sheepdog know the word?
-  // Setup Role text: "Sheepdog confirms the Flock's final votes."
-  // Typically Insider roles: Insider knows, players don't.
-  // If Sheepdog is trying to find wolves, does he know the word? 
-  // Let's assume ONLY Shepherd and Wolves know the word for sure. The prompt didn't specify.
-  // Actually, standard social deduction rules: helper doesn't know. 
-  // Let's only show the word to Shepherd and Wolves.
-  
+  // Planning Title is generic "YOU ARE PLAYING" in index.html now (Feedback 15)
+  // Construct the role description + secret word string to show inside the box (Feedback 11/13)
   const knowsWord = (roleKey === 'SHEPHERD' || roleKey === 'WOLF');
-  const swBox = document.getElementById('secret-word-box');
-  
+  let revealText = `${roleConfig.name}: ${roleConfig.desc}`;
   if (knowsWord) {
-    swBox.style.display = 'flex';
-    document.getElementById('secret-word-display').textContent = state.secretWord;
-  } else {
-    swBox.style.display = 'none'; // Hide the box completely for Flock / Sheepdog
+    revealText += ` Word: ${state.secretWord}`;
   }
+  
+  document.getElementById('secret-word-display').textContent = revealText;
+  
+  // All planning screens show the box now (Feedback 13)
+  document.getElementById('secret-word-box').style.display = 'flex';
   
   showScreen('planning');
 }
@@ -353,15 +496,26 @@ document.getElementById('btn-planning-next').addEventListener('click', () => {
   if (state.passIndex < state.players.length) {
     showHandToScreen();
   } else {
-    initMainPlay();
+    showHandBackShepherdScreen();
   }
+});
+
+function showHandBackShepherdScreen() {
+  const shepherdPlayer = state.players[state.shepherdIndex];
+  document.getElementById('hand-back-shepherd-name').textContent = shepherdPlayer;
+  showScreen('handBackShepherd');
+}
+
+document.getElementById('btn-hand-back-shepherd-ready').addEventListener('click', () => {
+  initMainPlay();
 });
 
 // ==========================================
 // 6. MAIN PLAY
 // ==========================================
 function initMainPlay() {
-  document.getElementById('main-play-shepherd-name').textContent = state.players[0];
+  const shepherdPlayer = state.players[state.shepherdIndex];
+  document.getElementById('main-play-shepherd-name').textContent = shepherdPlayer;
   document.getElementById('main-secret-word-display').textContent = state.secretWord;
   showScreen('mainPlay');
 }
@@ -403,7 +557,8 @@ function initEndRound() {
 }
 
 document.getElementById('btn-end-got-it').addEventListener('click', () => {
-  state.wordGuessedCorrectly = true;
+  // Toggle selection (Feedback 19)
+  state.wordGuessedCorrectly = !state.wordGuessedCorrectly;
   updateEndRoundUI();
 });
 
@@ -412,13 +567,10 @@ document.getElementById('btn-end-try-again').addEventListener('click', () => {
     state.triesLeft--;
     state.wordGuessedCorrectly = false;
     
-    // Actually, if they try again, do they go back to the main play screen?
-    // The prompt implies 3 attempts around the circle. 
-    // Yes, we just decrement tries and go back to Main Play so they can talk more.
     if (state.triesLeft > 0) {
       showScreen('mainPlay');
     } else {
-      updateEndRoundUI(); // out of tries, forces them to hit Continue
+      updateEndRoundUI(); // out of tries
     }
   }
 });
@@ -451,44 +603,79 @@ function calculateScores() {
     const role = state.roles[p];
     
     if (state.wordGuessedCorrectly) {
-      // +10 to Flock, Sheepdog, Secret Sheepdog
       if (role === 'FLOCK' || role === 'SHEEPDOG' || role === 'SECRET_SHEEPDOG') {
         globalScores[p] += scoresConfig.MODE_ONE_EXPERT_WORD_CORRECT;
       }
     } else {
-      // +45 to Wolf if team failed (hit 0 tries, or continue without selecting guessed)
       if (role === 'WOLF') {
         globalScores[p] += scoresConfig.MODE_ONE_EXPERT_WORD_FAILED;
       }
     }
     
-    // +15 to Sheepdog per wolf guessed
     if (role === 'SHEEPDOG' || role === 'SECRET_SHEEPDOG') {
       globalScores[p] += (scoresConfig.MODE_ONE_EXPERT_WOLF_FOUND * state.wolvesFoundInput);
     }
   });
 }
 
+function getPointsReason(p) {
+  const role = state.roles[p];
+  const reasons = [];
+  
+  if (state.wordGuessedCorrectly) {
+    if (role === 'FLOCK' || role === 'SHEEPDOG' || role === 'SECRET_SHEEPDOG') {
+      reasons.push("Got the word!");
+    }
+  } else {
+    if (role === 'WOLF') {
+      reasons.push("Fooled the flock!");
+    }
+  }
+  
+  if ((role === 'SHEEPDOG' || role === 'SECRET_SHEEPDOG') && state.wolvesFoundInput > 0) {
+    const count = state.wolvesFoundInput;
+    reasons.push(`Found ${count} ${count === 1 ? 'wolf' : 'wolves'}!`);
+  }
+  
+  return reasons.join(' ');
+}
+
 function initScoreboard() {
   const container = document.getElementById('scoreboard-list');
   container.innerHTML = '';
   
-  // Sort players by score
   const sortedPlayers = [...state.players].sort((a, b) => globalScores[b] - globalScores[a]);
   
   sortedPlayers.forEach(p => {
     const row = document.createElement('div');
     row.className = 'score-row';
     
+    const nameCol = document.createElement('div');
+    nameCol.style.display = 'flex';
+    nameCol.style.flexDirection = 'column';
+    
     const nameEl = document.createElement('span');
     nameEl.className = 'score-row-name';
     nameEl.textContent = p;
+    nameCol.appendChild(nameEl);
+    
+    // Add point reasons (Feedback 20)
+    const reasonText = getPointsReason(p);
+    if (reasonText) {
+      const reasonEl = document.createElement('span');
+      reasonEl.className = 'score-row-reason';
+      reasonEl.textContent = reasonText;
+      reasonEl.style.fontSize = '0.8rem';
+      reasonEl.style.color = 'var(--theme-color-dark)';
+      reasonEl.style.marginTop = '2px';
+      nameCol.appendChild(reasonEl);
+    }
     
     const ptsEl = document.createElement('span');
     ptsEl.className = 'score-row-pts';
     ptsEl.textContent = globalScores[p];
     
-    row.appendChild(nameEl);
+    row.appendChild(nameCol);
     row.appendChild(ptsEl);
     container.appendChild(row);
   });
@@ -497,8 +684,9 @@ function initScoreboard() {
 }
 
 document.getElementById('btn-scoreboard-play-again').addEventListener('click', () => {
-  // Retain global scores, but restart the setup loop
-  initSetupRoles(); // Usually skip player names, go straight to roles/topics for faster play again
+  // Move Shepherd and Sheepdog down the line by 1 (Feedback 21)
+  state.shepherdIndex = (state.shepherdIndex + 1) % state.players.length;
+  initSetupRoles();
 });
 
 // Run Init
