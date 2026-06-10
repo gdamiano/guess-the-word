@@ -588,6 +588,10 @@ document.getElementById('btn-end-wolves-minus').addEventListener('click', () => 
   }
 });
 
+document.getElementById('btn-end-cancel').addEventListener('click', () => {
+  showScreen('mainPlay');
+});
+
 document.getElementById('btn-end-continue').addEventListener('click', () => {
   calculateScores();
   initScoreboard();
