@@ -1,4 +1,4 @@
-export const wordCategories = {
+const wordCategories = {
   Animals: [
     "Dog", "Cat", "Lion", "Tiger", "Elephant", "Bear", "Monkey", "Rabbit",
     "Fox", "Wolf", "Deer", "Horse", "Cow", "Pig", "Sheep", "Goat"
