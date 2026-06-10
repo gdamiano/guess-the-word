@@ -50,11 +50,12 @@ To replace clunky, ad-heavy, and disjointed websites with a single, premium, ad-
 * [x] Enable GitHub Pages and verify live deployment.
 
 ### Phase 2: "Insider Mode" Refinement & Testing
-* [ ] Review and test the existing Insider setup, pass, and gameplay screens.
+* [x] Review and test the existing Insider setup, pass, and gameplay screens.
 * [ ] Verify that the timer properly triggers lose states.
 * [ ] Update the voting screen to handle the two-step Insider voting flow (Did we guess the word? -> Who is the Insider?).
 * [ ] Conduct playthrough testing to identify bugs, edge cases, and layout alignment issues on mobile viewports.
 * [ ] Polish text instructions, UI buttons, and styling for Insider.
+* [ ] Add a game timer and turn timer button to the main screen
 
 ### Phase 3: "Chameleon Mode" Refinement & Error-Proofing
 * [ ] Review and test the Chameleon role assignment, grid generation, and pass screen.

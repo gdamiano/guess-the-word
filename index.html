@@ -180,12 +180,13 @@
 
         <!-- SCREEN 9: Main Play -->
         <section id="screen-main-play" class="screen hidden text-center">
-          <h2 class="screen-title" style="margin-bottom: 8px;">THAT'S EVERYONE!</h2>
+          <h2 id="main-play-title" class="screen-title" style="margin-bottom: 8px;">Time to Vote!</h2>
           <p style="font-weight: 600; font-size: 1.1rem; margin-bottom: 12px;">Hi, <span id="main-play-shepherd-name">Shepherd</span>!</p>
           
-          <p class="mode-description" style="font-size: 0.95rem; margin-bottom: 20px;">
-            You know the secret word. Go around the room - each player may ask one question.<br><br>
-            On your next turn, the team tries to vote on the word. You can confirm if they are right.
+          <p id="main-play-desc" class="mode-description" style="font-size: 0.95rem; margin-bottom: 20px; white-space: pre-line;">
+            You know the secret word. Each player may ask one question.
+
+            When everyone had a turn, you can start the voting step.
           </p>
 
           <div class="flex-spacer"></div>
@@ -202,33 +203,50 @@
           <button class="btn btn-primary" id="btn-main-play-vote" style="width: 100%;">Let's Vote</button>
         </section>
 
-        <!-- SCREEN 10: End Of Round -->
-        <section id="screen-end-round" class="screen hidden text-center">
-          <h2 class="screen-title" style="margin-bottom: 20px;">HOW DID IT GO?</h2>
+        <!-- SCREEN 10A: Guess The Word -->
+        <section id="screen-vote-word" class="screen hidden text-center">
+          <h2 id="vote-word-title" class="screen-title" style="margin-bottom: 20px;">GUESS THE WORD</h2>
+          <p id="vote-word-desc" class="mode-description" style="font-size: 1rem; margin-bottom: 32px; padding: 0 10px;">
+            The players decide on one word to guess. The Sheepdog should help them finalize their guess.
+          </p>
           
-          <button class="btn btn-primary" id="btn-end-got-it" style="width: 100%; margin-bottom: 16px;">They got the word</button>
-          <button class="btn btn-cancel" id="btn-end-try-again" style="width: 100%; margin-bottom: 24px;">Try Again (<span id="end-tries-left">2</span> tries left)</button>
+          <button class="btn btn-success" id="btn-vote-word-correct" style="width: 100%; margin-bottom: 16px;">CORRECT</button>
+          <button class="btn btn-cancel" id="btn-vote-word-wrong" style="width: 100%; margin-bottom: 24px;">WRONG (<span id="vote-word-tries-left">3</span> tries left)</button>
           
-          <div class="setup-row" style="border-bottom: none; justify-content: center; gap: 20px;">
+          <div class="flex-spacer"></div>
+
+          <div class="action-bar-bottom">
+            <button class="btn btn-cancel" id="btn-vote-word-cancel">Cancel</button>
+          </div>
+        </section>
+
+        <!-- SCREEN 10B: Find The Wolves -->
+        <section id="screen-vote-wolves" class="screen hidden text-center">
+          <h2 id="vote-wolves-title" class="screen-title" style="margin-bottom: 20px;">FIND THE WOLVES</h2>
+          <p id="vote-wolves-desc" class="mode-description" style="font-size: 1rem; margin-bottom: 32px; padding: 0 10px;">
+            The players pick # players to vote as wolves. The Sheepdog should help them finalize their guess.
+          </p>
+          
+          <div class="setup-row" style="border-bottom: none; justify-content: center; gap: 20px; margin-bottom: 24px;">
             <span class="setup-label">Wolves found</span>
             <div class="setup-controls">
-              <button class="btn-icon" id="btn-end-wolves-minus">−</button>
-              <span id="end-wolves-display" style="font-weight: bold; font-size: 1.4rem;">0</span>
-              <button class="btn-icon" id="btn-end-wolves-plus">+</button>
+              <button class="btn-icon" id="btn-vote-wolves-minus">−</button>
+              <span id="vote-wolves-display" style="font-weight: bold; font-size: 1.4rem; min-width: 1.5rem; text-align: center; display: inline-block;">0</span>
+              <button class="btn-icon" id="btn-vote-wolves-plus">+</button>
             </div>
           </div>
 
           <div class="flex-spacer"></div>
 
           <div class="action-bar-bottom">
-            <button class="btn btn-cancel" id="btn-end-cancel">Cancel</button>
-            <button class="btn btn-secondary" id="btn-end-continue">Continue</button>
+            <button class="btn btn-cancel" id="btn-vote-wolves-back">BACK</button>
+            <button class="btn btn-primary" id="btn-vote-wolves-continue">GO TO SCORE</button>
           </div>
         </section>
 
         <!-- SCREEN 11: Scoreboard -->
         <section id="screen-scoreboard" class="screen hidden">
-          <h2 class="screen-title" style="margin-bottom: 16px;">SCOREBOARD</h2>
+          <h2 id="scoreboard-title" class="screen-title" style="margin-bottom: 16px;">SCOREBOARD</h2>
           
           <div id="scoreboard-list" style="overflow-y: auto; flex-grow: 1; margin-bottom: 16px;">
             <!-- Player scores injected here -->

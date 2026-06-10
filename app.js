@@ -35,7 +35,8 @@ const screens = {
   planning: document.getElementById('screen-planning'),
   handBackShepherd: document.getElementById('screen-hand-back-shepherd'),
   mainPlay: document.getElementById('screen-main-play'),
-  endRound: document.getElementById('screen-end-round'),
+  voteWord: document.getElementById('screen-vote-word'),
+  voteWolves: document.getElementById('screen-vote-wolves'),
   scoreboard: document.getElementById('screen-scoreboard')
 };
 
@@ -517,82 +518,88 @@ function initMainPlay() {
   const shepherdPlayer = state.players[state.shepherdIndex];
   document.getElementById('main-play-shepherd-name').textContent = shepherdPlayer;
   document.getElementById('main-secret-word-display').textContent = state.secretWord;
+
+  // Set dynamic title and description from config strings
+  const modeData = STRINGS.MODES[state.selectedGame];
+  document.getElementById('main-play-title').textContent = modeData.main_screen_title || "Time to Vote!";
+  document.getElementById('main-play-desc').textContent = modeData.main_screen_desc || "";
+
   showScreen('mainPlay');
 }
 
 document.getElementById('btn-main-play-vote').addEventListener('click', () => {
-  initEndRound();
+  initVoteWord();
 });
 
 // ==========================================
-// 7. END OF ROUND
+// 7. VOTING & RESOLUTION (SCREENS 10A & 10B)
 // ==========================================
-function updateEndRoundUI() {
-  document.getElementById('end-tries-left').textContent = state.triesLeft;
-  document.getElementById('end-wolves-display').textContent = state.wolvesFoundInput;
+function initVoteWord() {
+  const modeData = STRINGS.MODES[state.selectedGame];
+  document.getElementById('vote-word-title').textContent = modeData.vote_word_title || "GUESS THE WORD";
+  document.getElementById('vote-word-desc').textContent = modeData.vote_word_desc || "";
   
-  const btnTryAgain = document.getElementById('btn-end-try-again');
-  if (state.triesLeft <= 0) {
-    btnTryAgain.disabled = true;
-    btnTryAgain.textContent = "Out of Tries!";
-  } else {
-    btnTryAgain.disabled = false;
-    btnTryAgain.innerHTML = `Try Again (<span id="end-tries-left">${state.triesLeft}</span> tries left)`;
-  }
+  // Update tries left text on wrong button
+  document.getElementById('vote-word-tries-left').textContent = state.triesLeft;
   
-  // Highlight selection
-  if (state.wordGuessedCorrectly) {
-    document.getElementById('btn-end-got-it').style.opacity = '1';
-    document.getElementById('btn-end-try-again').style.opacity = '0.5';
-  } else {
-    document.getElementById('btn-end-got-it').style.opacity = '0.5';
-    document.getElementById('btn-end-try-again').style.opacity = '1';
-  }
+  showScreen('voteWord');
 }
 
-function initEndRound() {
-  state.wordGuessedCorrectly = false; // reset
-  updateEndRoundUI();
-  showScreen('endRound');
-}
-
-document.getElementById('btn-end-got-it').addEventListener('click', () => {
-  // Toggle selection (Feedback 19)
-  state.wordGuessedCorrectly = !state.wordGuessedCorrectly;
-  updateEndRoundUI();
+document.getElementById('btn-vote-word-correct').addEventListener('click', () => {
+  state.wordGuessedCorrectly = true;
+  initVoteWolves();
 });
 
-document.getElementById('btn-end-try-again').addEventListener('click', () => {
+document.getElementById('btn-vote-word-wrong').addEventListener('click', () => {
+  state.wordGuessedCorrectly = false;
   if (state.triesLeft > 0) {
     state.triesLeft--;
-    state.wordGuessedCorrectly = false;
-    
     if (state.triesLeft > 0) {
       showScreen('mainPlay');
     } else {
-      updateEndRoundUI(); // out of tries
+      // 0 tries left, force transition to finding wolves
+      initVoteWolves();
     }
   }
 });
 
-document.getElementById('btn-end-wolves-plus').addEventListener('click', () => {
-  if (state.wolvesFoundInput < state.rolesConfig.WOLF) {
-    state.wolvesFoundInput++;
-    updateEndRoundUI();
-  }
-});
-document.getElementById('btn-end-wolves-minus').addEventListener('click', () => {
-  if (state.wolvesFoundInput > 0) {
-    state.wolvesFoundInput--;
-    updateEndRoundUI();
-  }
-});
-
-document.getElementById('btn-end-cancel').addEventListener('click', () => {
+document.getElementById('btn-vote-word-cancel').addEventListener('click', () => {
   showScreen('mainPlay');
 });
 
-document.getElementById('btn-end-continue').addEventListener('click', () => {
+function initVoteWolves() {
+  const modeData = STRINGS.MODES[state.selectedGame];
+  document.getElementById('vote-wolves-title').textContent = modeData.vote_wolves_title || "FIND THE WOLVES";
+  document.getElementById('vote-wolves-desc').textContent = modeData.vote_wolves_desc || "";
+  
+  state.wolvesFoundInput = 0; // Reset to 0, centered
+  updateVoteWolvesUI();
+  showScreen('voteWolves');
+}
+
+function updateVoteWolvesUI() {
+  document.getElementById('vote-wolves-display').textContent = state.wolvesFoundInput;
+}
+
+document.getElementById('btn-vote-wolves-plus').addEventListener('click', () => {
+  if (state.wolvesFoundInput < state.rolesConfig.WOLF) {
+    state.wolvesFoundInput++;
+    updateVoteWolvesUI();
+  }
+});
+
+document.getElementById('btn-vote-wolves-minus').addEventListener('click', () => {
+  if (state.wolvesFoundInput > 0) {
+    state.wolvesFoundInput--;
+    updateVoteWolvesUI();
+  }
+});
+
+document.getElementById('btn-vote-wolves-back').addEventListener('click', () => {
+  initVoteWord();
+});
+
+document.getElementById('btn-vote-wolves-continue').addEventListener('click', () => {
   calculateScores();
   initScoreboard();
 });
@@ -647,6 +654,16 @@ function getPointsReason(p) {
 function initScoreboard() {
   const container = document.getElementById('scoreboard-list');
   container.innerHTML = '';
+  
+  // Set dynamic winner title and color on the scoreboard screen
+  const titleEl = document.getElementById('scoreboard-title');
+  if (state.wordGuessedCorrectly) {
+    titleEl.textContent = "THE FLOCK WINS!";
+    titleEl.style.color = "#0284c7"; // Blue
+  } else {
+    titleEl.textContent = "THE WOLVES WIN!";
+    titleEl.style.color = "#ef4444"; // Red
+  }
   
   const sortedPlayers = [...state.players].sort((a, b) => globalScores[b] - globalScores[a]);
   

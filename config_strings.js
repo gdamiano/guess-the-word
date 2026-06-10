@@ -6,7 +6,7 @@ const STRINGS = {
   
   BTN_LOG_PLAYERS: "Log Players",
   BTN_START_GAME: "Start Game",
-  BTN_CANCEL: "Cancel",
+  BTN_CANCEL: "Back",
   BTN_NEXT: "Next",
   BTN_PLAY: "Play",
   BTN_SET_UP: "Set Up",
@@ -29,8 +29,13 @@ const STRINGS = {
       setup_players_title: "SET UP 1/3: PLAYERS",
       setup_roles_title: "SET UP 2/3: ROLES",
       setup_topics_title: "SET UP 3/3: TOPICS",
-      how_to_play_title: "HOW TO PLAY",
-      how_to_play_desc: "The Shepherd knows the secret word. Go around the room - each player asks the Shepherd one yes/no question. Try to guess the word, but watch out for Wolves who will try to mislead the flock!",
+      how_to_play_desc: "The Shepherd knows the secret word.\nEach player asks the Shepherd one yes/no question.\nWhen everyone has a turn, vote on what the word could be!\nWolves secretly try to mislead the flock. After the round, guess who played the wolves!",
+      main_screen_title: "Time to Vote!",
+      main_screen_desc: "You know the secret word. Each player may ask one question.\n\nWhen everyone had a turn, you can start the voting step.",
+      vote_word_title: "GUESS THE WORD",
+      vote_word_desc: "The players decide on one word to guess. The Sheepdog should help them finalize their guess.",
+      vote_wolves_title: "FIND THE WOLVES",
+      vote_wolves_desc: "The players pick # players to vote as wolves. The Sheepdog should help them finalize their guess.",
       roles: {
         SHEPHERD: {
           id: "SHEPHERD",
