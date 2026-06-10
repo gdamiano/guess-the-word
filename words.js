@@ -7,7 +7,7 @@ const wordCategories = {
     "Pizza", "Burger", "Pasta", "Sushi", "Salad", "Taco", "Steak", "Soup",
     "Bread", "Cheese", "Apple", "Banana", "Chocolate", "Ice Cream", "Cake", "Cookie"
   ],
-  "Pop Culture": [
+  "Movie Titles": [
     "Star Wars", "Harry Potter", "Avengers", "Titanic", "Avatar", "Matrix",
     "Inception", "Toy Story", "Batman", "Spider-Man", "Jurassic Park", "Frozen",
     "Terminator", "Jaws", "Shrek", "Gladiator"
@@ -23,5 +23,9 @@ const wordCategories = {
   Objects: [
     "Table", "Chair", "Clock", "Mirror", "Lamp", "Key", "Phone", "Book",
     "Pen", "Cup", "Plate", "Knife", "Fork", "Spoon", "Bed", "Pillow"
+  ],
+  Vehicles: [
+    "Car", "Plane", "Boat", "Train", "Bus", "Subway", "Snomobile", "Golf Cart",
+	"Scooter", "Skateboard", "Bicycle", "Carriage", "Helicopter", "Hang Glider", "Motorcycle", "Go Kart"
   ]
 };
