@@ -1,5 +1,5 @@
 const STRINGS = {
-  APP_TITLE: "Choose a Game",
+  APP_TITLE: "Words & Wolves",
   HEADER_CHOOSE_GAME: "Choose a Game",
   HEADER_ASK_SHEPHERD: "Ask the Shepherd",
   HEADER_FOLLOW_FLOCK: "Follow the Flock",
@@ -18,13 +18,16 @@ const STRINGS = {
   BTN_TRY_AGAIN: "Try Again",
   ABOUT_TITLE: "About the Game",
   ABOUT_TEXT: `<h3>Guess The Word</h3>
-<p>Welcome to <strong>Guess The Word</strong>, a premium pass-and-play social deduction game designed for groups of 3 to 10 players to play together in person on a single device!</p>
+<p>Welcome to <strong>Words & Wolves</strong>, a premium pass-and-play social deduction game designed for groups of 4 or more players using a single laptop, tablet or mobile device!</p>
 
 <h4>Ask the Shepherd</h4>
-<p>In this mode, one player is the Shepherd who knows the secret word. Others ask yes/no questions in circle order. Watch out for the Wolves who also know the secret word and are trying to subtly mislead the team into choosing the wrong word. The Sheepdogs must work together to finalize the correct word and root out the hidden wolves!</p>
+<p>In this mode, one player is the Shepherd who knows the secret word. Others ask yes/no questions in circle order. Watch out for the Wolves who also know the secret word and are trying to subtly mislead the team into choosing the wrong word. The Sheepdogs must organize the final votes for guessing the correct word and rooting out the hidden wolves.</p>
 
 <h4>Follow the Flock</h4>
-<p>All players except one (the Chameleon) know the secret word. Players take turns saying a single word related to the secret word. The Chameleon must bluff and fit in without knowing the word, then guess the word if they are voted out.</p>
+<p>All players except the Wolves know the secret word. Players take turns saying a single word related to the secret word. The Wolves must bluff and fit in without knowing the word, then guess the word if they are voted out.</p>
+
+<h4>AI Disclosures</h4>
+<p>No AI-generated art or layouts were used in this app. Generative AI was used to write the code and perform developer documentation and operations. Steps were taken to avoid the theft of human artistic works.</p>
 
 <p style="margin-top: 16px; font-size: 0.85rem; color: var(--color-text-muted);">Developed with premium aesthetics and dynamic visual themes.</p>`,
 

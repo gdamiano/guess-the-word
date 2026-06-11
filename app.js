@@ -621,6 +621,14 @@ function initVoteWord() {
   // Update tries left text subtitle
   document.getElementById('vote-word-tries-subtitle').textContent = `${state.triesLeft} ${state.triesLeft === 1 ? 'try' : 'tries'} left`;
   
+  // Update wrong button text based on remaining tries
+  const wrongBtn = document.getElementById('btn-vote-word-wrong');
+  if (state.triesLeft > 1) {
+    wrongBtn.textContent = "WRONG (try again)";
+  } else {
+    wrongBtn.textContent = "WRONG (team loses)";
+  }
+  
   showScreen('voteWord');
 }
 
