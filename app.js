@@ -84,12 +84,20 @@ function selectMode(modeId) {
   
   document.getElementById('mode-description').textContent = modeData.description;
   
+  const previewImg = document.getElementById('home-mode-preview');
   if (modeId === 'MODE_ONE_EXPERT') {
     document.getElementById('btn-mode-expert').classList.add('active');
     document.getElementById('btn-mode-group').classList.remove('active');
+    if (previewImg) {
+      previewImg.src = 'assets/mode_ask_the_expert.png?v=2';
+      previewImg.style.display = 'block';
+    }
   } else {
     document.getElementById('btn-mode-group').classList.add('active');
     document.getElementById('btn-mode-expert').classList.remove('active');
+    if (previewImg) {
+      previewImg.style.display = 'none';
+    }
   }
   
   // Shift classes to body instead of appFrame

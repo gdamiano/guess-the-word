@@ -531,3 +531,23 @@ p.mode-description strong {
   margin: 0;
 }
 
+/* Mode Preview & Illustrations */
+.mode-preview-container, .mode-illustration-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 12px 0;
+  max-height: 180px;
+  flex-shrink: 1;
+  min-height: 0;
+}
+.mode-preview-img, .mode-illustration-img {
+  max-width: 100%;
+  max-height: 180px;
+  height: auto;
+  object-fit: contain;
+  border-radius: 12px;
+}
+
+
