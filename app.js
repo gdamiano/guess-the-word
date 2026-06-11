@@ -342,6 +342,22 @@ function updateRoleDisplays() {
 }
 
 function initSetupRoles() {
+  // Set default role amounts
+  state.rolesConfig.SHEPHERD = 1;
+  state.rolesConfig.SHEEPDOG = 1;
+  state.rolesConfig.SECRET_SHEEPDOG = 0;
+
+  // Calculate default wolf count: 1 Wolf for every 5 Sheep and/or Sheepdog
+  let w = 1;
+  for (let testW = Math.max(1, state.playerCount - 2); testW >= 1; testW--) {
+    const h = state.playerCount - 1 - testW;
+    if (testW <= Math.floor(h / 5)) {
+      w = testW;
+      break;
+    }
+  }
+  state.rolesConfig.WOLF = w;
+
   updateRoleDisplays();
   showScreen('setupRoles');
 }
