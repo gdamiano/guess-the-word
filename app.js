@@ -22,7 +22,9 @@ const state = {
   // Voting Round State
   triesLeft: 3,
   wordGuessedCorrectly: false,
-  wolvesFoundInput: 0
+  wolvesFoundInput: 0,
+  wolvesSurvivedTurns: 0,
+  keepRoles: false
 };
 
 // --- DOM ELEMENTS ---
@@ -39,7 +41,8 @@ const screens = {
   voteWord: document.getElementById('screen-vote-word'),
   voteWolves: document.getElementById('screen-vote-wolves'),
   scoreboard: document.getElementById('screen-scoreboard'),
-  about: document.getElementById('screen-about')
+  about: document.getElementById('screen-about'),
+  voteWolvesGroup: document.getElementById('screen-vote-wolves-group')
 };
 
 const appFrame = document.getElementById('app-frame');
@@ -145,10 +148,6 @@ document.getElementById('btn-about-close').addEventListener('click', () => {
 // 1. HOME & HOW TO PLAY
 // ==========================================
 document.getElementById('btn-home-start').addEventListener('click', () => {
-  if (state.selectedGame !== 'MODE_ONE_EXPERT') {
-    alert("Only Ask the Shepherd is implemented for now!");
-    return;
-  }
   // Immediately show players setup
   initSetupPlayers();
 });
@@ -162,6 +161,8 @@ document.getElementById('btn-how-to-play-play').addEventListener('click', () => 
 // 2. SETUP PLAYERS
 // ==========================================
 function initSetupPlayers() {
+  state.keepRoles = false;
+  state.wolvesSurvivedTurns = 0;
   renderPlayerInputs();
   showScreen('setupPlayers');
 }
@@ -342,21 +343,47 @@ function updateRoleDisplays() {
 }
 
 function initSetupRoles() {
-  // Set default role amounts
-  state.rolesConfig.SHEPHERD = 1;
-  state.rolesConfig.SHEEPDOG = 1;
-  state.rolesConfig.SECRET_SHEEPDOG = 0;
+  if (state.selectedGame === 'MODE_GROUP_GUESSERS') {
+    document.getElementById('setup-row-shepherd').style.display = 'none';
+    document.getElementById('setup-row-secret-sheepdog').style.display = 'none';
+    document.getElementById('btn-sheepdog-minus').style.visibility = 'hidden';
+    document.getElementById('btn-sheepdog-plus').style.visibility = 'hidden';
+    
+    state.rolesConfig.SHEPHERD = 0;
+    state.rolesConfig.SHEEPDOG = 1;
+    state.rolesConfig.SECRET_SHEEPDOG = 0;
 
-  // Calculate default wolf count: 1 Wolf for every 5 Sheep and/or Sheepdog
-  let w = 1;
-  for (let testW = Math.max(1, state.playerCount - 2); testW >= 1; testW--) {
-    const h = state.playerCount - 1 - testW;
-    if (testW <= Math.floor(h / 5)) {
-      w = testW;
-      break;
+    let w = 1;
+    for (let testW = Math.max(1, state.playerCount - 1); testW >= 1; testW--) {
+      const h = state.playerCount - testW;
+      if (testW <= Math.floor(h / 5)) {
+        w = testW;
+        break;
+      }
     }
+    state.rolesConfig.WOLF = w;
+  } else {
+    document.getElementById('setup-row-shepherd').style.display = 'flex';
+    document.getElementById('setup-row-secret-sheepdog').style.display = 'flex';
+    document.getElementById('btn-sheepdog-minus').style.visibility = 'visible';
+    document.getElementById('btn-sheepdog-plus').style.visibility = 'visible';
+
+    // Set default role amounts
+    state.rolesConfig.SHEPHERD = 1;
+    state.rolesConfig.SHEEPDOG = 1;
+    state.rolesConfig.SECRET_SHEEPDOG = 0;
+
+    // Calculate default wolf count: 1 Wolf for every 5 Sheep and/or Sheepdog
+    let w = 1;
+    for (let testW = Math.max(1, state.playerCount - 2); testW >= 1; testW--) {
+      const h = state.playerCount - 1 - testW;
+      if (testW <= Math.floor(h / 5)) {
+        w = testW;
+        break;
+      }
+    }
+    state.rolesConfig.WOLF = w;
   }
-  state.rolesConfig.WOLF = w;
 
   updateRoleDisplays();
   showScreen('setupRoles');
@@ -477,33 +504,61 @@ function startGame() {
   state.secretWord = state.words[Math.floor(Math.random() * state.words.length)];
 
   // 2. Assign Roles (Fully Randomized from non-Shepherds)
-  state.roles = {};
-  
-  // Set Shepherd (active shepherd index in the circle)
   const shepherdPlayer = state.players[state.shepherdIndex];
-  state.roles[shepherdPlayer] = 'SHEPHERD';
-  
-  // Shuffled pool of all players who are not the Shepherd
-  const pool = state.players.filter(p => p !== shepherdPlayer);
-  // Fisher-Yates shuffle
-  for (let i = pool.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [pool[i], pool[j]] = [pool[j], pool[i]];
-  }
-  
-  let pIdx = 0;
-  // Sequentially allocate from the shuffled pool
-  for (let i = 0; i < state.rolesConfig.SHEEPDOG; i++) {
-    if (pIdx < pool.length) state.roles[pool[pIdx++]] = 'SHEEPDOG';
-  }
-  for (let i = 0; i < state.rolesConfig.WOLF; i++) {
-    if (pIdx < pool.length) state.roles[pool[pIdx++]] = 'WOLF';
-  }
-  for (let i = 0; i < state.rolesConfig.SECRET_SHEEPDOG; i++) {
-    if (pIdx < pool.length) state.roles[pool[pIdx++]] = 'SECRET_SHEEPDOG';
-  }
-  while (pIdx < pool.length) {
-    state.roles[pool[pIdx++]] = 'FLOCK';
+  if (!state.keepRoles) {
+    state.roles = {};
+    
+    if (state.selectedGame === 'MODE_GROUP_GUESSERS') {
+      state.roles[shepherdPlayer] = 'SHEEPDOG';
+    } else {
+      state.roles[shepherdPlayer] = 'SHEPHERD';
+    }
+    
+    // Shuffled pool of all players who are not the Shepherd
+    const pool = state.players.filter(p => p !== shepherdPlayer);
+    // Fisher-Yates shuffle
+    for (let i = pool.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [pool[i], pool[j]] = [pool[j], pool[i]];
+    }
+
+    // Secret Rule: never assign the player right after the sheepdog (rotating leader) to be a wolf (Follow the Flock only)
+    if (state.selectedGame === 'MODE_GROUP_GUESSERS') {
+      const nextPlayer = state.players[(state.shepherdIndex + 1) % state.players.length];
+      const numPoolSheepdogs = 0;
+      const wolfStart = numPoolSheepdogs;
+      const wolfEnd = numPoolSheepdogs + state.rolesConfig.WOLF;
+
+      const nextPlayerIdx = pool.indexOf(nextPlayer);
+      if (nextPlayerIdx >= wolfStart && nextPlayerIdx < wolfEnd) {
+        let swapIdx = -1;
+        for (let i = 0; i < pool.length; i++) {
+          if (i < wolfStart || i >= wolfEnd) {
+            swapIdx = i;
+            break;
+          }
+        }
+        if (swapIdx !== -1) {
+          [pool[nextPlayerIdx], pool[swapIdx]] = [pool[swapIdx], pool[nextPlayerIdx]];
+        }
+      }
+    }
+    
+    let pIdx = 0;
+    // Sequentially allocate from the shuffled pool
+    const numPoolSheepdogs = state.selectedGame === 'MODE_GROUP_GUESSERS' ? 0 : state.rolesConfig.SHEEPDOG;
+    for (let i = 0; i < numPoolSheepdogs; i++) {
+      if (pIdx < pool.length) state.roles[pool[pIdx++]] = 'SHEEPDOG';
+    }
+    for (let i = 0; i < state.rolesConfig.WOLF; i++) {
+      if (pIdx < pool.length) state.roles[pool[pIdx++]] = 'WOLF';
+    }
+    for (let i = 0; i < state.rolesConfig.SECRET_SHEEPDOG; i++) {
+      if (pIdx < pool.length) state.roles[pool[pIdx++]] = 'SECRET_SHEEPDOG';
+    }
+    while (pIdx < pool.length) {
+      state.roles[pool[pIdx++]] = 'FLOCK';
+    }
   }
 
   // 3. Create Pass and Play Handoff Sequence
@@ -511,7 +566,7 @@ function startGame() {
   state.passSequence.push(shepherdPlayer);
   
   // Find Main Sheepdog (if any) and place them second
-  const sheepdog = state.players.find(p => state.roles[p] === 'SHEEPDOG');
+  const sheepdog = state.players.find(p => state.roles[p] === 'SHEEPDOG' && p !== shepherdPlayer);
   if (sheepdog) {
     state.passSequence.push(sheepdog);
   }
@@ -538,10 +593,20 @@ function startGame() {
 // ==========================================
 function showHandToScreen() {
   const activePlayer = state.passSequence[state.passIndex];
+  const roleKey = state.roles[activePlayer];
   document.getElementById('hand-to-player-name').textContent = activePlayer;
   
   // Button says "I'm [Player Name]" instead of a role name (Feedback 9)
   document.getElementById('btn-hand-to-ready').textContent = `I'm ${activePlayer}`;
+  
+  const imgEl = screens.handTo.querySelector('.pass-phone-img');
+  if (state.passIndex === 0 && roleKey === 'SHEEPDOG') {
+    imgEl.src = 'assets/pass_to_sheepdog.png?v=2';
+    imgEl.classList.add('sheepdog-img');
+  } else {
+    imgEl.src = 'assets/pass_the_phone.png?v=2';
+    imgEl.classList.remove('sheepdog-img');
+  }
   
   showScreen('handTo');
 }
@@ -557,7 +622,13 @@ function initPlanningScreen() {
   
   // Planning Title is generic "YOU ARE PLAYING" in index.html now (Feedback 15)
   // Construct the role description + secret word string to show inside the box (Feedback 11/13)
-  const knowsWord = (roleKey === 'SHEPHERD' || roleKey === 'WOLF');
+  let knowsWord = false;
+  if (state.selectedGame === 'MODE_GROUP_GUESSERS') {
+    knowsWord = (roleKey === 'FLOCK' || roleKey === 'SHEEPDOG');
+  } else {
+    knowsWord = (roleKey === 'SHEPHERD' || roleKey === 'WOLF');
+  }
+  
   let revealText = `${roleConfig.name}: ${roleConfig.desc}`;
   if (knowsWord) {
     revealText += ` Word: ${state.secretWord}`;
@@ -602,6 +673,23 @@ document.getElementById('btn-planning-next').addEventListener('click', () => {
 function showHandBackShepherdScreen() {
   const shepherdPlayer = state.players[state.shepherdIndex];
   document.getElementById('hand-back-shepherd-name').textContent = shepherdPlayer;
+
+  const imgEl = screens.handBackShepherd.querySelector('.pass-phone-img');
+  const btnEl = document.getElementById('btn-hand-back-shepherd-ready');
+  const titleEl = screens.handBackShepherd.querySelector('.screen-title');
+
+  if (state.selectedGame === 'MODE_GROUP_GUESSERS') {
+    titleEl.textContent = "ROUND READY!";
+    imgEl.src = 'assets/pass_to_sheepdog.png?v=2';
+    imgEl.classList.add('sheepdog-img');
+    btnEl.textContent = "I'M THE SHEEPDOG";
+  } else {
+    titleEl.textContent = "ROUND READY!";
+    imgEl.src = 'assets/pass_to_shepherd.png?v=2';
+    imgEl.classList.remove('sheepdog-img');
+    btnEl.textContent = "I'M THE SHEPHERD";
+  }
+
   showScreen('handBackShepherd');
 }
 
@@ -622,11 +710,22 @@ function initMainPlay() {
   document.getElementById('main-play-title').textContent = modeData.main_screen_title || "Time to Vote!";
   document.getElementById('main-play-desc').textContent = modeData.main_screen_desc || "";
 
+  const mainIllustrationImg = screens.mainPlay.querySelector('.mode-illustration-img');
+  if (state.selectedGame === 'MODE_GROUP_GUESSERS') {
+    mainIllustrationImg.src = 'assets/pass_to_sheepdog.png?v=2';
+  } else {
+    mainIllustrationImg.src = 'assets/mode_ask_the_expert.png?v=2';
+  }
+
   showScreen('mainPlay');
 }
 
 document.getElementById('btn-main-play-vote').addEventListener('click', () => {
-  initVoteWord();
+  if (state.selectedGame === 'MODE_GROUP_GUESSERS') {
+    initVoteWolvesGroup();
+  } else {
+    initVoteWord();
+  }
 });
 
 // ==========================================
@@ -727,9 +826,70 @@ document.getElementById('btn-vote-wolves-continue').addEventListener('click', ()
 });
 
 // ==========================================
+// 7B. VOTING FOR FOLLOW THE FLOCK
+// ==========================================
+function initVoteWolvesGroup() {
+  showScreen('voteWolvesGroup');
+  updateVoteWolvesGroupUI();
+}
+
+function updateVoteWolvesGroupUI() {
+  const triesEl = document.getElementById('vote-wolves-group-tries');
+  triesEl.textContent = `Wolves survived ${state.wolvesSurvivedTurns} ${state.wolvesSurvivedTurns === 1 ? 'turn' : 'turns'}`;
+}
+
+document.getElementById('btn-vote-wolves-group-found').addEventListener('click', () => {
+  state.wordGuessedCorrectly = true; // Meaning "found a wolf"
+  state.wolvesSurvivedTurns = 0;
+  state.keepRoles = false;
+  calculateScores();
+  initScoreboard();
+});
+
+document.getElementById('btn-vote-wolves-group-keep-wolves').addEventListener('click', () => {
+  state.wordGuessedCorrectly = false; // "wrong guess"
+  state.keepRoles = true;
+  calculateScores();
+  state.wolvesSurvivedTurns++;
+  initSetupTopics();
+});
+
+document.getElementById('btn-vote-wolves-group-new-wolves').addEventListener('click', () => {
+  state.wordGuessedCorrectly = false; // "wrong guess"
+  state.keepRoles = false;
+  state.wolvesSurvivedTurns = 0;
+  calculateScores();
+  initScoreboard();
+});
+
+document.getElementById('btn-vote-wolves-group-back').addEventListener('click', () => {
+  showScreen('mainPlay');
+});
+
+// ==========================================
 // 8. SCORING & SCOREBOARD
 // ==========================================
 function calculateScores() {
+  if (state.selectedGame === 'MODE_GROUP_GUESSERS') {
+    const scoresConfig = STRINGS.MODES.MODE_GROUP_GUESSERS.SCORING;
+    state.players.forEach(p => {
+      const role = state.roles[p];
+      if (state.wordGuessedCorrectly) {
+        if (role !== 'WOLF') {
+          globalScores[p] += scoresConfig.MODE_GROUP_GUESSERS_WOLF_FOUND;
+        }
+        if (role === 'SHEEPDOG') {
+          globalScores[p] += scoresConfig.MODE_GROUP_GUESSERS_SHEEPDOG_EXTRA;
+        }
+      } else {
+        if (role === 'WOLF') {
+          globalScores[p] += scoresConfig.MODE_GROUP_GUESSERS_WOLF_WRONG;
+        }
+      }
+    });
+    return;
+  }
+
   const scoresConfig = STRINGS.MODES.MODE_ONE_EXPERT.SCORING;
   
   state.players.forEach(p => {
@@ -754,6 +914,16 @@ function calculateScores() {
 function getPointsReason(p) {
   const role = state.roles[p];
   const reasons = [];
+
+  if (state.selectedGame === 'MODE_GROUP_GUESSERS') {
+    if (state.wordGuessedCorrectly) {
+      if (role !== 'WOLF') reasons.push("Found the wolf!");
+      if (role === 'SHEEPDOG') reasons.push("Led the vote!");
+    } else {
+      if (role === 'WOLF') reasons.push("Fooled the flock!");
+    }
+    return reasons.join(' ');
+  }
   
   if (state.wordGuessedCorrectly) {
     if (role === 'FLOCK' || role === 'SHEEPDOG' || role === 'SECRET_SHEEPDOG') {

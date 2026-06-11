@@ -28,6 +28,8 @@ body.theme-blue {
 body.theme-pink {
   --theme-color: #f472b6;
   --theme-color-dark: #db2777;
+  --color-action: #fbcfe8; /* light pink confirm button */
+  --color-action-hover: #f9a8d4; /* hover pink confirm button */
 }
 
 .hidden {
@@ -627,6 +629,10 @@ p.mode-description strong {
 }
 .pass-phone-container.large, .pass-phone-img.large {
   max-height: 270px;
+}
+
+.pass-phone-img.sheepdog-img {
+  transform: scale(1.3);
 }
 
 /* About Screen Styling */

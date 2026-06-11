@@ -69,11 +69,14 @@ A standardized workflow governs how media assets are structured, scaled, and man
 ## Spoken Word Game Rulesets
 
 ### Game A: Follow the Flock (Chameleon)
-* **Roles:** 1 Chameleon, others are common players.
-* **Context:** A 4x4 grid of 16 words is generated.
-* **Information:** Common players see the secret word. The Chameleon only sees the category and the grid.
-* **Gameplay:** Players say one related word in a circle. Chameleon bluffs.
-* **Endgame:** Vote for Chameleon. If caught, Chameleon gets one guess at the secret word from the grid to escape.
+* **Roles:** 1 Sheepdog (fixed/rotating active player), Wolves (who bluff without knowing the word), and Flock (common players).
+* **Information:** Sheepdog and Flock see the secret word. Wolves do not know the word.
+* **Gameplay:** Go around the room saying a single related word.
+* **Endgame:** The group votes on who is a wolf.
+  - **FOUND A WOLF!**: Ends the round. Flock wins. Non-wolves get 10 points, and the Sheepdog gets 10 extra points (Reason: "Led the vote!").
+  - **WRONG (keep wolves)**: Wolves win the round and get 10 points. Keeps current roles, increments the "Wolves survived X turns" counter, and loops back to Setup Topics to choose a new topic.
+  - **WRONG (new wolves)**: Wolves win the round and get 10 points. Resets the turn counter, reshuffles roles on the next round, and displays the scoreboard.
+* **Secret Rule**: The player directly after the rotating Sheepdog in circle order is never assigned to be a wolf.
 
 ### Game B: Ask the Shepherd (Insider Mode / `MODE_ONE_EXPERT`)
 * **Roles:** 1 Shepherd (fixed), Wolves (mislead), Sheepdog (confirms guesses, goes first after Shepherd), Secret Sheepdog (hidden voter), and Flock (common guessers).
@@ -105,9 +108,11 @@ A standardized workflow governs how media assets are structured, scaled, and man
 * [x] Fix container overflow bugs to enable vertical scroll containment inside the viewport.
 * [x] Implement configurable player portraits on setup, how to play, and scoreboard screens with automatic resource fallbacks.
 
-### Phase 3: "Follow the Flock" Mode Refinement & Error-Proofing
-* [ ] Review and test the Chameleon role assignment, grid generation, and pass screen.
-* [ ] Verify that the 16-word grid displays correctly without highlighting the secret word during the active round.
-* [ ] Implement voting logic and ensure the Chameleon Escape screen functions correctly (selecting from the 16-word grid).
-* [ ] Audit the code for potential errors, edge cases (e.g. player count transitions, timer resets, double button clicks).
-* [ ] Polish visual elements and animations.
+### Phase 3: "Follow the Flock" Mode Refinement & Error-Proofing (Complete)
+* [x] Implement custom voting layout separate from the other mode.
+* [x] Set up dynamic sheepdog portrait scaling (30% larger) and main play screen portrait swap.
+* [x] Implement "WRONG (keep wolves)" flow that awards points and loops back to Topics setup.
+* [x] Implement "WRONG (new wolves)" flow that awards points and goes to scoreboard/normal rotation.
+* [x] Implement custom light-pink color scheme for primary/confirm buttons in Follow the Flock theme.
+* [x] Fix double sheepdog assignment bugs and enforce 1 rotating sheepdog.
+* [x] Implement position-based wolf avoidance secret rule for the group mode.

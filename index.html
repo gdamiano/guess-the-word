@@ -63,7 +63,7 @@
           <h2 id="setup-roles-title" class="screen-title">SET UP 2/3: ROLES</h2>
           <div id="roles-config-list" style="overflow-y: auto; flex-grow: 1; min-height: 0; padding-right: 4px;">
             <!-- Shepherd (Fixed to 1) -->
-            <div class="setup-row role-row">
+            <div class="setup-row role-row" id="setup-row-shepherd">
               <img class="role-row-img" src="assets/portrait_shepherd_neutral.png?v=2" alt="Shepherd">
               <div class="role-row-info">
                 <span class="setup-label">Shepherd</span>
@@ -76,7 +76,7 @@
               </div>
             </div>
             <!-- Wolves -->
-            <div class="setup-row role-row">
+            <div class="setup-row role-row" id="setup-row-wolf">
               <img class="role-row-img" src="assets/portrait_wolf_happy.png?v=2" onerror="this.onerror=null; this.src='assets/portrait_wolf_neutral.png?v=2';" alt="Wolf">
               <div class="role-row-info">
                 <span class="setup-label">Wolves</span>
@@ -89,7 +89,7 @@
               </div>
             </div>
             <!-- Sheepdog -->
-            <div class="setup-row role-row">
+            <div class="setup-row role-row" id="setup-row-sheepdog">
               <img class="role-row-img" src="assets/portrait_sheepdog_happy.png?v=2" onerror="this.onerror=null; this.src='assets/portrait_sheep_neutral.png?v=2';" alt="Sheepdog">
               <div class="role-row-info">
                 <span class="setup-label">Sheepdog</span>
@@ -102,7 +102,7 @@
               </div>
             </div>
             <!-- Secret Sheepdog -->
-            <div class="setup-row role-row">
+            <div class="setup-row role-row" id="setup-row-secret-sheepdog">
               <img class="role-row-img" src="assets/portrait_secret_sheepdog_neutral.png?v=2" onerror="this.onerror=null; this.src='assets/portrait_secret_sheepdog.png?v=2';" alt="Secret Sheepdog">
               <div class="role-row-info">
                 <span class="setup-label">Secret Sheepdog</span>
@@ -269,6 +269,25 @@
           <div class="action-bar-bottom">
             <button class="btn btn-cancel" id="btn-vote-wolves-back">BACK</button>
             <button class="btn btn-primary" id="btn-vote-wolves-continue">GO TO SCORE</button>
+          </div>
+        </section>
+
+        <!-- SCREEN 10B.2: Find The Wolves (Follow the Flock) -->
+        <section id="screen-vote-wolves-group" class="screen hidden text-center">
+          <h2 id="vote-wolves-group-title" class="screen-title" style="margin-bottom: 20px;">FIND THE WOLVES</h2>
+          <p id="vote-wolves-group-desc" class="mode-description" style="font-size: 1rem; margin-bottom: 32px; padding: 0 10px;">
+            Decide as a group on 1 player who is a wolf. The Sheepdog calls for the final vote.
+          </p>
+          <p id="vote-wolves-group-tries" style="font-weight: bold; font-size: 1.1rem; color: var(--theme-color-dark); margin-bottom: 20px;">3 tries left</p>
+          
+          <button class="btn btn-success" id="btn-vote-wolves-group-found" style="width: 100%; margin-bottom: 16px;">FOUND A WOLF!</button>
+          <button class="btn btn-cancel" id="btn-vote-wolves-group-keep-wolves" style="width: 100%; margin-bottom: 16px;">WRONG (keep wolves)</button>
+          <button class="btn btn-cancel" id="btn-vote-wolves-group-new-wolves" style="width: 100%; margin-bottom: 24px;">WRONG (new wolves)</button>
+          
+          <div class="flex-spacer"></div>
+
+          <div class="action-bar-bottom">
+            <button class="btn btn-cancel" id="btn-vote-wolves-group-back">Back</button>
           </div>
         </section>
 

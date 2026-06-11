@@ -94,7 +94,39 @@ const STRINGS = {
       title: "Follow the Flock",
       description: "One player doesn't know the secret word. Everyone else knows it. Go around the room saying one related word. Don't get caught!",
       themeClass: "theme-pink",
-      roles: {}
+      setup_players_title: "SET UP 1/3: PLAYERS",
+      setup_roles_title: "SET UP 2/3: ROLES",
+      setup_topics_title: "SET UP 3/3: TOPICS",
+      how_to_play_desc: "Sheep and Sheepdogs know the secret word.\nOn the wolves' turn, they try to blend in.\nThe Sheepdog helps the team vote.",
+      main_screen_title: "Time to Vote!",
+      main_screen_desc: "Everyone has said a word!\n\nDiscuss and decide who the Wolf is.",
+      vote_wolves_title: "FIND THE WOLVES",
+      vote_wolves_desc: "Decide as a group on 1 player who is a wolf. The Sheepdog calls for the final vote.",
+      roles: {
+        SHEEPDOG: {
+          id: "SHEEPDOG",
+          name: "Sheepdog",
+          desc: "starts the round, and calls the final vote at the end.",
+          instruction: "You know the answer! Start the round by saying a word related to:\nAnswer: "
+        },
+        FLOCK: {
+          id: "FLOCK",
+          name: "Flock",
+          desc: "says a related word.",
+          instruction: "You know the answer! When it's your turn, say a word related to:\nAnswer: "
+        },
+        WOLF: {
+          id: "WOLF",
+          name: "Wolf",
+          desc: "DON'T know the word. Fake it!",
+          instruction: "You're the wolf. You DON'T know the word! Listen to others and say a word that fits in.\nAnswer: Unknown"
+        }
+      },
+      SCORING: {
+        MODE_GROUP_GUESSERS_WOLF_WRONG: 10,
+        MODE_GROUP_GUESSERS_WOLF_FOUND: 10,
+        MODE_GROUP_GUESSERS_SHEEPDOG_EXTRA: 10
+      }
     }
   }
 };
@@ -109,7 +141,13 @@ const PORTRAIT_CONFIG = {
   ask_the_expert_secret_hunter_win: "portrait_secret_sheepdog_neutral.png",
   ask_the_expert_secret_hunter_lose: "portrait_secret_sheepdog_neutral.png",
   ask_the_expert_expert_win: "portrait_shepherd_neutral.png",
-  ask_the_expert_expert_lose: "portrait_shepherd_neutral.png"
+  ask_the_expert_expert_lose: "portrait_shepherd_neutral.png",
+  group_guessers_team_win: "portrait_sheep_happy.png",
+  group_guessers_team_lose: "portrait_sheep_angry.png",
+  group_guessers_spy_win: "portrait_wolf_happy.png",
+  group_guessers_spy_lose: "portrait_wolf_angry.png",
+  group_guessers_hunter_win: "portrait_sheepdog_happy.png",
+  group_guessers_hunter_lose: "portrait_sheepdog_happy.png"
 };
 
 const HOW_TO_PLAY_CONFIG = {
@@ -119,6 +157,13 @@ const HOW_TO_PLAY_CONFIG = {
     { text: "When everyone has a turn, vote on what the word could be!", image: "portrait_sheep_happy.png", fallback: "portrait_sheep_neutral.png" },
     { text: "Wolves secretly try to mislead the flock.", image: "portrait_wolf_happy.png", fallback: "portrait_wolf_neutral.png" },
     { text: "After the round, guess who played the wolves!", image: "portrait_sheepdog_happy.png", fallback: "portrait_sheep_neutral.png" }
+  ],
+  MODE_GROUP_GUESSERS: [
+    { text: "Sheep and Sheepdogs know the secret word. On their turn player says one word related to the secret word.", image: "portrait_sheep_neutral.png", fallback: "portrait_sheep_neutral.png" },
+    { text: "On the wolves' turn, they try to \"blend in\" saying a word that fits the words they hear.", image: "portrait_wolf_angry.png", fallback: "portrait_wolf_neutral.png" },
+    { text: "When every player has gone, the Sheepdog helps the team vote on who may be a wolf.", image: "portrait_sheepdog_happy.png", fallback: "portrait_sheep_neutral.png" },
+    { text: "The sheep team gets points every round they vote and eliminate a wolf.", image: "portrait_sheep_happy.png", fallback: "portrait_sheep_neutral.png" },
+    { text: "The wolf team gets points every round the sheep team vote is wrong.", image: "portrait_wolf_neutral.png", fallback: "portrait_wolf_neutral.png" }
   ]
 };
 
