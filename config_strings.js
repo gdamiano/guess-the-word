@@ -5,6 +5,7 @@ const STRINGS = {
   HEADER_FOLLOW_FLOCK: "Follow the Flock",
   
   BTN_LOG_PLAYERS: "Log Players",
+  BTN_ABOUT: "About",
   BTN_START_GAME: "Start Game",
   BTN_CANCEL: "Back",
   BTN_NEXT: "Next",
@@ -15,6 +16,17 @@ const STRINGS = {
   BTN_LETS_VOTE: "Let's Vote",
   BTN_THEY_GOT_IT: "They got the word",
   BTN_TRY_AGAIN: "Try Again",
+  ABOUT_TITLE: "About the Game",
+  ABOUT_TEXT: `<h3>Guess The Word</h3>
+<p>Welcome to <strong>Guess The Word</strong>, a premium pass-and-play social deduction game designed for groups of 3 to 10 players to play together in person on a single device!</p>
+
+<h4>Ask the Shepherd</h4>
+<p>In this mode, one player is the Shepherd who knows the secret word. Others ask yes/no questions in circle order. Watch out for the Wolves who also know the secret word and are trying to subtly mislead the team into choosing the wrong word. The Sheepdogs must work together to finalize the correct word and root out the hidden wolves!</p>
+
+<h4>Follow the Flock</h4>
+<p>All players except one (the Chameleon) know the secret word. Players take turns saying a single word related to the secret word. The Chameleon must bluff and fit in without knowing the word, then guess the word if they are voted out.</p>
+
+<p style="margin-top: 16px; font-size: 0.85rem; color: var(--color-text-muted);">Developed with premium aesthetics and dynamic visual themes.</p>`,
 
   TXT_HOLD_TO_VIEW: "HOLD TO VIEW\nyour secret",
   TXT_PRESS_PASS: "I'M READY!",
@@ -35,7 +47,7 @@ const STRINGS = {
       vote_word_title: "GUESS THE WORD",
       vote_word_desc: "The players decide on one word to guess. The Sheepdog should help them finalize their guess.",
       vote_wolves_title: "FIND THE WOLVES",
-      vote_wolves_desc: "The players pick # players to vote as wolves. The Sheepdog should help them finalize their guess.",
+      vote_wolves_desc: "Accuse # players of being wolves. The Sheepdog should help them finalize their guess.",
       roles: {
         SHEPHERD: {
           id: "SHEPHERD",

@@ -17,6 +17,7 @@ const state = {
   secretWord: '',
   roles: {}, // { "Player Name": "WOLF" }
   passIndex: 0,
+  passSequence: [], // Custom pass order starting Shepherd -> Sheepdog -> rest
   
   // Voting Round State
   triesLeft: 3,
@@ -37,7 +38,8 @@ const screens = {
   mainPlay: document.getElementById('screen-main-play'),
   voteWord: document.getElementById('screen-vote-word'),
   voteWolves: document.getElementById('screen-vote-wolves'),
-  scoreboard: document.getElementById('screen-scoreboard')
+  scoreboard: document.getElementById('screen-scoreboard'),
+  about: document.getElementById('screen-about')
 };
 
 const appFrame = document.getElementById('app-frame');
@@ -58,6 +60,9 @@ function showScreen(screenKey) {
   if (screenKey === 'home') {
     appHeaderTitle.textContent = STRINGS.HEADER_CHOOSE_GAME;
     btnAppClose.style.display = 'none';
+  } else if (screenKey === 'about') {
+    appHeaderTitle.textContent = STRINGS.ABOUT_TITLE || "About";
+    btnAppClose.style.display = 'none';
   } else {
     appHeaderTitle.textContent = STRINGS.MODES[state.selectedGame].title;
     btnAppClose.style.display = 'flex';
@@ -70,6 +75,7 @@ function initApp() {
   document.getElementById('label-mode-expert').textContent = STRINGS.MODES.MODE_ONE_EXPERT.title;
   document.getElementById('label-mode-group').textContent = STRINGS.MODES.MODE_GROUP_GUESSERS.title;
   document.getElementById('btn-home-start').textContent = STRINGS.BTN_START_GAME;
+  document.getElementById('btn-home-about').textContent = STRINGS.BTN_ABOUT || "About";
   
   selectMode('MODE_ONE_EXPERT');
   showScreen('home');
@@ -120,6 +126,16 @@ btnAppClose.addEventListener('click', () => {
     selectMode('MODE_ONE_EXPERT');
     showScreen('home');
   }
+});
+
+document.getElementById('btn-home-about').addEventListener('click', () => {
+  document.getElementById('about-screen-title').textContent = STRINGS.ABOUT_TITLE || "About";
+  document.getElementById('about-content').innerHTML = STRINGS.ABOUT_TEXT || "";
+  showScreen('about');
+});
+
+document.getElementById('btn-about-close').addEventListener('click', () => {
+  showScreen('home');
 });
 
 // ==========================================
@@ -441,23 +457,15 @@ function startGame() {
   });
   state.secretWord = state.words[Math.floor(Math.random() * state.words.length)];
 
-  // 2. Assign Roles
+  // 2. Assign Roles (Fully Randomized from non-Shepherds)
   state.roles = {};
   
   // Set Shepherd (active shepherd index in the circle)
   const shepherdPlayer = state.players[state.shepherdIndex];
   state.roles[shepherdPlayer] = 'SHEPHERD';
   
-  // Set Sheepdog (index next to Shepherd in circle order, if configured) (Feedback 14)
-  let sheepdogPlayer = null;
-  if (state.rolesConfig.SHEEPDOG > 0) {
-    const sheepdogIdx = (state.shepherdIndex + 1) % state.players.length;
-    sheepdogPlayer = state.players[sheepdogIdx];
-    state.roles[sheepdogPlayer] = 'SHEEPDOG';
-  }
-  
-  // Shuffled pool for remaining roles
-  const pool = state.players.filter(p => p !== shepherdPlayer && p !== sheepdogPlayer);
+  // Shuffled pool of all players who are not the Shepherd
+  const pool = state.players.filter(p => p !== shepherdPlayer);
   // Fisher-Yates shuffle
   for (let i = pool.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
@@ -465,6 +473,10 @@ function startGame() {
   }
   
   let pIdx = 0;
+  // Sequentially allocate from the shuffled pool
+  for (let i = 0; i < state.rolesConfig.SHEEPDOG; i++) {
+    if (pIdx < pool.length) state.roles[pool[pIdx++]] = 'SHEEPDOG';
+  }
   for (let i = 0; i < state.rolesConfig.WOLF; i++) {
     if (pIdx < pool.length) state.roles[pool[pIdx++]] = 'WOLF';
   }
@@ -475,7 +487,25 @@ function startGame() {
     state.roles[pool[pIdx++]] = 'FLOCK';
   }
 
-  // 3. Reset Round State
+  // 3. Create Pass and Play Handoff Sequence
+  state.passSequence = [];
+  state.passSequence.push(shepherdPlayer);
+  
+  // Find Main Sheepdog (if any) and place them second
+  const sheepdog = state.players.find(p => state.roles[p] === 'SHEEPDOG');
+  if (sheepdog) {
+    state.passSequence.push(sheepdog);
+  }
+  
+  // Add all other players in circle order starting from Shepherd index
+  for (let i = 0; i < state.players.length; i++) {
+    const p = state.players[(state.shepherdIndex + i) % state.players.length];
+    if (!state.passSequence.includes(p)) {
+      state.passSequence.push(p);
+    }
+  }
+
+  // 4. Reset Round State
   state.triesLeft = 3;
   state.wordGuessedCorrectly = false;
   state.wolvesFoundInput = 0;
@@ -488,8 +518,7 @@ function startGame() {
 // 5. PASS & PLAY / PLANNING
 // ==========================================
 function showHandToScreen() {
-  // Offset by shepherdIndex so phone starts with Shepherd and goes in circle order (Feedback 14/21)
-  const activePlayer = state.players[(state.shepherdIndex + state.passIndex) % state.players.length];
+  const activePlayer = state.passSequence[state.passIndex];
   document.getElementById('hand-to-player-name').textContent = activePlayer;
   
   // Button says "I'm [Player Name]" instead of a role name (Feedback 9)
@@ -503,7 +532,7 @@ document.getElementById('btn-hand-to-ready').addEventListener('click', () => {
 });
 
 function initPlanningScreen() {
-  const activePlayer = state.players[(state.shepherdIndex + state.passIndex) % state.players.length];
+  const activePlayer = state.passSequence[state.passIndex];
   const roleKey = state.roles[activePlayer];
   const roleConfig = STRINGS.MODES[state.selectedGame].roles[roleKey];
   
@@ -544,7 +573,7 @@ setupSecretWordBox('main-secret-word-box', 'main-secret-word-reveal-content', 'm
 
 document.getElementById('btn-planning-next').addEventListener('click', () => {
   state.passIndex++;
-  if (state.passIndex < state.players.length) {
+  if (state.passIndex < state.passSequence.length) {
     showHandToScreen();
   } else {
     showHandBackShepherdScreen();
@@ -589,8 +618,8 @@ function initVoteWord() {
   document.getElementById('vote-word-title').textContent = modeData.vote_word_title || "GUESS THE WORD";
   document.getElementById('vote-word-desc').textContent = modeData.vote_word_desc || "";
   
-  // Update tries left text on wrong button
-  document.getElementById('vote-word-tries-left').textContent = state.triesLeft;
+  // Update tries left text subtitle
+  document.getElementById('vote-word-tries-subtitle').textContent = `${state.triesLeft} ${state.triesLeft === 1 ? 'try' : 'tries'} left`;
   
   showScreen('voteWord');
 }
@@ -620,7 +649,22 @@ document.getElementById('btn-vote-word-cancel').addEventListener('click', () => 
 function initVoteWolves() {
   const modeData = STRINGS.MODES[state.selectedGame];
   document.getElementById('vote-wolves-title').textContent = modeData.vote_wolves_title || "FIND THE WOLVES";
-  document.getElementById('vote-wolves-desc').textContent = modeData.vote_wolves_desc || "";
+  
+  // Accuse # players of being wolves description
+  let desc = modeData.vote_wolves_desc || "Accuse # players of being wolves. The Sheepdog should help them finalize their guess.";
+  desc = desc.replace('#', state.rolesConfig.WOLF);
+  document.getElementById('vote-wolves-desc').textContent = desc;
+
+  // Add Secret Sheepdogs warning string dynamically if present
+  const secSheepdogs = state.rolesConfig.SECRET_SHEEPDOG || 0;
+  const wolvesInfoEl = document.getElementById('vote-wolves-secret-sheepdogs-info');
+  if (secSheepdogs >= 1) {
+    const totalAccuse = state.rolesConfig.WOLF + secSheepdogs;
+    wolvesInfoEl.textContent = `There are ${secSheepdogs} Secret Sheepdog${secSheepdogs === 1 ? '' : 's'} in the team! You may accuse and test a total of ${totalAccuse} players of being wolves.`;
+    wolvesInfoEl.style.display = 'block';
+  } else {
+    wolvesInfoEl.style.display = 'none';
+  }
   
   state.wolvesFoundInput = 0; // Reset to 0, centered
   updateVoteWolvesUI();
@@ -632,7 +676,8 @@ function updateVoteWolvesUI() {
 }
 
 document.getElementById('btn-vote-wolves-plus').addEventListener('click', () => {
-  if (state.wolvesFoundInput < state.rolesConfig.WOLF) {
+  const maxAccuse = state.rolesConfig.WOLF + (state.rolesConfig.SECRET_SHEEPDOG || 0);
+  if (state.wolvesFoundInput < maxAccuse) {
     state.wolvesFoundInput++;
     updateVoteWolvesUI();
   }

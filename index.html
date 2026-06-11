@@ -34,7 +34,7 @@
           </div>
           <div class="flex-spacer"></div>
           <div class="action-bar-bottom">
-            <button class="btn btn-secondary" id="btn-home-log" disabled>Log Players</button>
+            <button class="btn btn-secondary" id="btn-home-about">About</button>
             <button class="btn btn-primary" id="btn-home-start">Start Game</button>
           </div>
         </section>
@@ -233,9 +233,10 @@
           <p id="vote-word-desc" class="mode-description" style="font-size: 1rem; margin-bottom: 32px; padding: 0 10px;">
             The players decide on one word to guess. The Sheepdog should help them finalize their guess.
           </p>
+          <p id="vote-word-tries-subtitle" style="font-weight: bold; font-size: 1.1rem; color: var(--theme-color-dark); margin-bottom: 20px;"></p>
           
           <button class="btn btn-success" id="btn-vote-word-correct" style="width: 100%; margin-bottom: 16px;">CORRECT</button>
-          <button class="btn btn-cancel" id="btn-vote-word-wrong" style="width: 100%; margin-bottom: 24px;">WRONG (<span id="vote-word-tries-left">3</span> tries left)</button>
+          <button class="btn btn-cancel" id="btn-vote-word-wrong" style="width: 100%; margin-bottom: 24px;">WRONG</button>
           
           <div class="flex-spacer"></div>
 
@@ -259,6 +260,8 @@
               <button class="btn-icon" id="btn-vote-wolves-plus">+</button>
             </div>
           </div>
+          
+          <p id="vote-wolves-secret-sheepdogs-info" class="mode-description" style="font-size: 0.95rem; margin-top: 12px; color: var(--theme-color-dark); padding: 0 10px;"></p>
 
           <div class="flex-spacer"></div>
 
@@ -279,6 +282,17 @@
           <div class="flex-spacer"></div>
 
           <button class="btn btn-primary" id="btn-scoreboard-play-again" style="width: 100%;">Play Again</button>
+        </section>
+
+        <!-- SCREEN 12: About Screen -->
+        <section id="screen-about" class="screen hidden">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+            <h2 id="about-screen-title" class="screen-title" style="margin: 0; text-transform: uppercase;">About</h2>
+            <button id="btn-about-close" class="btn-close" style="position: static; font-size: 1.1rem; width: 28px; height: 28px; background: #e2e8f0; color: #1e293b;" aria-label="Close">✖</button>
+          </div>
+          <div id="about-content" style="overflow-y: auto; flex-grow: 1; padding-right: 4px; font-size: 0.95rem; line-height: 1.5; color: var(--color-text-body);">
+            <!-- Content loaded from config -->
+          </div>
         </section>
 
       </main>

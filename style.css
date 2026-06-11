@@ -590,5 +590,36 @@ p.mode-description strong {
   max-height: 270px;
 }
 
+/* About Screen Styling */
+#about-content h3 {
+  font-family: var(--font-header);
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--theme-color-dark);
+  margin-top: 0;
+  margin-bottom: 8px;
+}
+
+#about-content h4 {
+  font-family: var(--font-header);
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--color-dark);
+  margin-top: 18px;
+  margin-bottom: 6px;
+}
+
+#about-content p {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  margin-bottom: 12px;
+  color: var(--color-text-body);
+}
+
+#about-content strong {
+  color: var(--color-dark);
+  font-weight: 600;
+}
+
 
 
