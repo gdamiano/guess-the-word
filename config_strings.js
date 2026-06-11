@@ -1,6 +1,6 @@
 const STRINGS = {
-  APP_TITLE: "Words & Wolves",
-  HEADER_CHOOSE_GAME: "Words & Wolves",
+  APP_TITLE: "Fool the Flock!",
+  HEADER_CHOOSE_GAME: "Fool the Flock!",
   HEADER_ASK_SHEPHERD: "Ask the Shepherd",
   HEADER_FOLLOW_FLOCK: "Follow the Flock",
   
@@ -18,7 +18,7 @@ const STRINGS = {
   BTN_TRY_AGAIN: "Try Again",
   ABOUT_TITLE: "About the Game",
   ABOUT_TEXT: `<h3>Guess The Word</h3>
-<p>Welcome to <strong>Words & Wolves</strong>, a premium pass-and-play social deduction game designed for groups of 4 or more players using a single laptop, tablet or mobile device!</p>
+<p>Welcome to <strong>Fool the Flock!</strong>, a premium pass-and-play social deduction game designed for groups of 4 or more players using a single laptop, tablet or mobile device!</p>
 
 <h4>Ask the Shepherd</h4>
 <p>In this mode, one player is the Shepherd who knows the secret word. Others ask yes/no questions in circle order. Watch out for the Wolves who also know the secret word and are trying to subtly mislead the team into choosing the wrong word. The Sheepdogs must organize the final votes for guessing the correct word and rooting out the hidden wolves.</p>

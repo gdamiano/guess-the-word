@@ -116,3 +116,7 @@ A standardized workflow governs how media assets are structured, scaled, and man
 * [x] Implement custom light-pink color scheme for primary/confirm buttons in Follow the Flock theme.
 * [x] Fix double sheepdog assignment bugs and enforce 1 rotating sheepdog.
 * [x] Implement position-based wolf avoidance secret rule for the group mode.
+
+### Phase 4: Polish fixes
+* [ ] Review and clean up all user-facing text
+* [ ] Add a dark horizon floor to the background
