@@ -29,6 +29,7 @@ The application is structured as a single-page web app built on standard web tec
 
 ### 2. Player and Category Configuration
 * Add and remove players (min 3, max 10) with support for drag-and-drop grab handles (`☰`) and rotation shifts (`↑` to make a player Player 1).
+* Default role configurations are calculated and populated upon entering the Setup screen: 1 Shepherd, 1 Sheepdog, 0 Secret Sheepdogs, and 1 Wolf for every 5 Sheep and/or Sheepdogs (minimum of 1 Wolf).
 * Grid category selector loaded dynamically from [words.js](file:///c:/Users/pogoo/Documents/Cursor/Guess%20The%20Word/words.js), starting unselected by default, featuring 2 columns of centered buttons.
 
 ### 3. "Pass & Play" Security Mechanics
