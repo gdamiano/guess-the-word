@@ -1,6 +1,6 @@
 const STRINGS = {
   APP_TITLE: "Words & Wolves",
-  HEADER_CHOOSE_GAME: "Choose a Game",
+  HEADER_CHOOSE_GAME: "Words & Wolves",
   HEADER_ASK_SHEPHERD: "Ask the Shepherd",
   HEADER_FOLLOW_FLOCK: "Follow the Flock",
   
