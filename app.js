@@ -92,8 +92,15 @@ function selectMode(modeId) {
       previewImg.src = 'assets/mode_ask_the_expert.png?v=2';
       previewImg.style.display = 'block';
     }
-  } else {
+  } else if (modeId === 'MODE_GROUP_GUESSERS') {
     document.getElementById('btn-mode-group').classList.add('active');
+    document.getElementById('btn-mode-expert').classList.remove('active');
+    if (previewImg) {
+      previewImg.src = 'assets/mode_group_guessing.png?v=2';
+      previewImg.style.display = 'block';
+    }
+  } else {
+    document.getElementById('btn-mode-group').classList.remove('active');
     document.getElementById('btn-mode-expert').classList.remove('active');
     if (previewImg) {
       previewImg.style.display = 'none';
