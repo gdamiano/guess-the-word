@@ -388,10 +388,10 @@ document.getElementById('btn-setup-topics-next').addEventListener('click', () =>
       
       const img = document.createElement('img');
       img.className = 'how-to-play-row-img';
-      img.src = `assets/${item.image}`;
+      img.src = `assets/${item.image}?v=2`;
       img.alt = "";
       img.onerror = () => {
-        img.src = `assets/${item.fallback || 'portrait_sheep_neutral.png'}`;
+        img.src = `assets/${item.fallback || 'portrait_sheep_neutral.png'}?v=2`;
         img.onerror = null;
       };
       
@@ -732,10 +732,10 @@ function initScoreboard() {
 
     const imgEl = document.createElement('img');
     imgEl.className = 'score-row-img';
-    imgEl.src = `assets/${filename}`;
+    imgEl.src = `assets/${filename}?v=2`;
     imgEl.alt = `${p}'s portrait`;
     imgEl.onerror = () => {
-      imgEl.src = `assets/${fallbackImages[role] || 'portrait_sheep_neutral.png'}`;
+      imgEl.src = `assets/${fallbackImages[role] || 'portrait_sheep_neutral.png'}?v=2`;
       imgEl.onerror = null; // Prevent infinite loop in case fallback is also missing
     };
     row.appendChild(imgEl);
