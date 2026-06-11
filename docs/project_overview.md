@@ -15,7 +15,7 @@ The application is structured as a single-page web app built on standard web tec
 * **Main Layout & HTML Structure:** [index.html](file:///c:/Users/pogoo/Documents/Cursor/Guess%20The%20Word/index.html) contains all 11 screens of the game structured inside a unified `.app-frame` viewport wrapper. Screens are hidden and shown dynamically using class toggles.
 * **Game Logic & State Machine:** [app.js](file:///c:/Users/pogoo/Documents/Cursor/Guess%20The%20Word/app.js) handles global state management, player sorting, touch/drag events, scoring algorithms, and routing.
 * **Theme Styling & Layout:** [style.css](file:///c:/Users/pogoo/Documents/Cursor/Guess%20The%20Word/style.css) implements the visual identity using CSS custom properties for color transitions, flexbox layouts for vertical scroll containment, and custom buttons.
-* **Game Strings & Configuration:** [config_strings.js](file:///c:/Users/pogoo/Documents/Cursor/Guess%20The%20Word/config_strings.js) centralizes all UI text strings, role descriptions, headers, and scoring weights, allowing easy adjustment of descriptions and rules.
+* **Game Strings & Configuration:** [config_strings.js](file:///c:/Users/pogoo/Documents/Cursor/Guess%20The%20Word/config_strings.js) centralizes all UI text strings, role descriptions, headers, scoring weights, and configurable portrait mappings (`PORTRAIT_CONFIG`, `HOW_TO_PLAY_CONFIG`), allowing easy adjustment of descriptions, rules, and image assets.
 * **Word Database:** [words.js](file:///c:/Users/pogoo/Documents/Cursor/Guess%20The%20Word/words.js) exports the categorized vocabulary words for topics.
 
 ---
@@ -34,6 +34,13 @@ The application is structured as a single-page web app built on standard web tec
 * **Pass The Phone Screen:** Clear directions displaying "I'm [Player Name]" on buttons to ensure only the intended player views their secret.
 * **Planning Screen reveal box:** A secure hold-to-reveal area under a generic "YOU ARE PLAYING" title (preventing peeking) showing role descriptions and the secret word (for Shepherd & Wolves) in uniform size and color.
 * **Transition Handoff:** A hand-back transition screen at the end of the reveal phase instructs the last player to hand the phone back to the Shepherd before the active round starts.
+
+### 4. Player Portraits & Headshots
+* Configurable role-based portrait headshots displayed across key interfaces:
+  * **Setup Roles Screen**: Displays "happy" character icons for Shepherd, Wolves, Sheepdog, and Secret Sheepdog next to role configurations, with automatic fallback to neutral base assets.
+  * **How to Play Screen**: Lists structured rules as individual card items, each accompanied by its matching illustration.
+  * **Results / Scoreboard Screen**: Displays a win or lose portrait next to each player's row depending on their role and round outcome (win/lose).
+  * **Graceful Asset Fallbacks**: Employs robust `onerror` fallbacks to neutral assets (e.g. `portrait_wolf_neutral.png`, `portrait_secret_sheepdog.png`) if specialized outcome/emotional portrait files are missing.
 
 ---
 
@@ -74,6 +81,7 @@ The application is structured as a single-page web app built on standard web tec
 * [x] Implement divided voting sequence: Guess the Word (10A) and Find the Wolves (10B).
 * [x] Implement point distribution algorithms, detailed scoreboard reason text, and play again role rotations.
 * [x] Fix container overflow bugs to enable vertical scroll containment inside the viewport.
+* [x] Implement configurable player portraits on setup, how to play, and scoreboard screens with automatic resource fallbacks.
 
 ### Phase 3: "Follow the Flock" Mode Refinement & Error-Proofing
 * [ ] Review and test the Chameleon role assignment, grid generation, and pass screen.
