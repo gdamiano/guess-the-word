@@ -82,6 +82,9 @@ function initApp() {
   
   // Setup drag-and-drop on the player inputs list
   makeListDraggable(document.getElementById('players-input-list'));
+  
+  // Initialize dynamic background clouds
+  initCloudWallpaper();
 }
 
 function selectMode(modeId) {
@@ -842,6 +845,108 @@ document.getElementById('btn-scoreboard-play-again').addEventListener('click', (
   state.shepherdIndex = (state.shepherdIndex + 1) % state.players.length;
   initSetupRoles();
 });
+
+// ==========================================
+// DYNAMIC CLOUD WALLPAPER EFFECT
+// ==========================================
+function initCloudWallpaper() {
+  const container = document.getElementById('cloud-wallpaper');
+  if (!container) return;
+
+  container.innerHTML = '';
+
+  const count = CLOUD_CONFIG.initialCloudCount || 6;
+  const isSheepArray = new Array(count).fill(false);
+  let sheepAssigned = 0;
+  const maxSheep = CLOUD_CONFIG.maxSheepClouds || 2;
+  
+  // Randomly distribute sheep indices for initial clouds
+  while (sheepAssigned < Math.min(maxSheep, count)) {
+    const idx = Math.floor(Math.random() * count);
+    if (!isSheepArray[idx]) {
+      isSheepArray[idx] = true;
+      sheepAssigned++;
+    }
+  }
+
+  // Pre-populate initial clouds across the screen horizontally
+  for (let i = 0; i < count; i++) {
+    const initialPercentAcross = (i / count) * 100 + (Math.random() * (100 / count));
+    spawnCloud(true, initialPercentAcross, isSheepArray[i]);
+  }
+
+  // Set up loop for continuous spawning
+  setInterval(() => {
+    spawnCloud(false);
+  }, CLOUD_CONFIG.spawnIntervalMs);
+}
+
+function spawnCloud(isInitial = false, initialPercentAcross = 0, forceSheep = null) {
+  const container = document.getElementById('cloud-wallpaper');
+  if (!container) return;
+
+  const activeClouds = container.querySelectorAll('.cloud');
+  let activeSheepCount = 0;
+  activeClouds.forEach(el => {
+    if (el.dataset.isSheep === 'true') {
+      activeSheepCount++;
+    }
+  });
+
+  // Determine if this cloud should be a sheep
+  let isSheep = false;
+  const maxSheep = CLOUD_CONFIG.maxSheepClouds || 2;
+  
+  if (forceSheep !== null) {
+    isSheep = forceSheep;
+  } else {
+    // If we have fewer than maxSheep active, force a sheep cloud to maintain the count
+    if (activeSheepCount < maxSheep) {
+      isSheep = true;
+    }
+  }
+
+  let assetName = 'cloud_normal.png';
+  if (isSheep) {
+    const sheepAssets = ['cloud_sheep_neutral.png', 'cloud_sheep_happy.png', 'cloud_sheep_derpy.png'];
+    assetName = sheepAssets[Math.floor(Math.random() * sheepAssets.length)];
+  }
+
+  const cloudEl = document.createElement('img');
+  cloudEl.className = 'cloud';
+  cloudEl.src = `assets/${assetName}?v=2`;
+  cloudEl.dataset.isSheep = isSheep ? 'true' : 'false';
+
+  // Size sizing
+  const size = Math.floor(Math.random() * (CLOUD_CONFIG.maxSizePx - CLOUD_CONFIG.minSizePx + 1)) + CLOUD_CONFIG.minSizePx;
+  cloudEl.style.width = `${size}px`;
+  cloudEl.style.height = 'auto';
+
+  // Vertical boundary positioning (top 2/3rds of viewport)
+  const topVal = Math.floor(Math.random() * (CLOUD_CONFIG.maxTopPercent - CLOUD_CONFIG.minTopPercent + 1)) + CLOUD_CONFIG.minTopPercent;
+  cloudEl.style.top = `${topVal}%`;
+
+  // Speed configuration (duration of cross)
+  const duration = Math.floor(Math.random() * (CLOUD_CONFIG.maxSpeedSec - CLOUD_CONFIG.minSpeedSec + 1)) + CLOUD_CONFIG.minSpeedSec;
+  cloudEl.style.animationDuration = `${duration}s`;
+
+  if (isInitial) {
+    // Start mid-animation by applying a negative delay
+    const delay = -(duration * (initialPercentAcross / 100));
+    cloudEl.style.animationDelay = `${delay}s`;
+  }
+
+  cloudEl.onerror = () => {
+    cloudEl.src = 'assets/cloud_normal.png?v=2';
+    cloudEl.onerror = null;
+  };
+
+  cloudEl.addEventListener('animationend', () => {
+    cloudEl.remove();
+  });
+
+  container.appendChild(cloudEl);
+}
 
 // Run Init
 initApp();

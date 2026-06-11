@@ -12,10 +12,10 @@ To replace clunky, ad-heavy, and disjointed websites with a single, premium, ad-
 ## Project Architecture & File Mappings
 The application is structured as a single-page web app built on standard web technologies without external framework build steps, ensuring it can run directly from the local file system (`file://` protocol compatible) or via static hosting.
 
-* **Main Layout & HTML Structure:** [index.html](file:///c:/Users/pogoo/Documents/Cursor/Guess%20The%20Word/index.html) contains all 12 screens of the game structured inside a unified `.app-frame` viewport wrapper. Screens are hidden and shown dynamically using class toggles.
-* **Game Logic & State Machine:** [app.js](file:///c:/Users/pogoo/Documents/Cursor/Guess%20The%20Word/app.js) handles global state management, player sorting, touch/drag events, scoring algorithms, custom handoff sequences, and routing.
-* **Theme Styling & Layout:** [style.css](file:///c:/Users/pogoo/Documents/Cursor/Guess%20The%20Word/style.css) implements the visual identity using CSS custom properties for color transitions, flexbox layouts for vertical scroll containment, custom buttons, and screen-specific layouts.
-* **Game Strings & Configuration:** [config_strings.js](file:///c:/Users/pogoo/Documents/Cursor/Guess%20The%20Word/config_strings.js) centralizes all UI text strings, role descriptions, headers, scoring weights, and configurable portrait mappings (`PORTRAIT_CONFIG`, `HOW_TO_PLAY_CONFIG`), allowing easy adjustment of descriptions, rules, and image assets.
+* **Main Layout & HTML Structure:** [index.html](file:///c:/Users/pogoo/Documents/Cursor/Guess%20The%20Word/index.html) contains all 12 screens of the game structured inside a unified `.app-frame` viewport wrapper, along with the background `#cloud-wallpaper` container. Screens are hidden and shown dynamically using class toggles.
+* **Game Logic & State Machine:** [app.js](file:///c:/Users/pogoo/Documents/Cursor/Guess%20The%20Word/app.js) handles global state management, player sorting, touch/drag events, scoring algorithms, custom handoff sequences, routing, and dynamic background cloud animation/tracking.
+* **Theme Styling & Layout:** [style.css](file:///c:/Users/pogoo/Documents/Cursor/Guess%20The%20Word/style.css) implements the visual identity using CSS custom properties for color transitions, flexbox layouts for vertical scroll containment, custom buttons, screen-specific layouts, and hardware-accelerated sky/cloud scrolling animations.
+* **Game Strings & Configuration:** [config_strings.js](file:///c:/Users/pogoo/Documents/Cursor/Guess%20The%20Word/config_strings.js) centralizes all UI text strings, role descriptions, headers, scoring weights, configurable portrait mappings (`PORTRAIT_CONFIG`, `HOW_TO_PLAY_CONFIG`), and cloud speed/spawn parameters (`CLOUD_CONFIG`).
 * **Word Database:** [words.js](file:///c:/Users/pogoo/Documents/Cursor/Guess%20The%20Word/words.js) exports the categorized vocabulary words for topics.
 
 ---
@@ -46,6 +46,13 @@ The application is structured as a single-page web app built on standard web tec
 
 ### 5. About Screen
 * Accessible via the home screen. Dynamically renders game information, rules summaries, and AI disclosures confirming that no generative AI-generated artwork was used in this app.
+
+### 6. Dynamic Cloud Wallpaper Background
+* A premium, slow-scrolling sky background rendered fullscreen (on `body`) behind the centered `#root-app` mobile frame.
+* Dynamically manages and tracks active clouds, guaranteeing that exactly 2 sheep-shaped clouds (derpy, neutral, or happy sheep) are scrolling across the screen at any given time.
+* Restricts vertical cloud boundaries to the top 2/3rds of the viewport.
+* Utilizes negative `animation-delay` offsets at startup to pre-populate clouds evenly across the screen.
+* Customizable configuration values (`CLOUD_CONFIG` in [config_strings.js](file:///c:/Users/pogoo/Documents/Cursor/Guess%20The%20Word/config_strings.js)) control speed, sizing, boundaries, spawn rates, and sheep limits.
 
 ---
 

@@ -122,4 +122,17 @@ const HOW_TO_PLAY_CONFIG = {
   ]
 };
 
+const CLOUD_CONFIG = {
+  spawnIntervalMs: 6000,    // Time between cloud spawns
+  minSpeedSec: 25,          // Minimum time to cross screen (seconds)
+  maxSpeedSec: 45,          // Maximum time to cross screen (seconds)
+  maxSheepClouds: 2,        // Target number of sheep clouds on screen
+  initialCloudCount: 6,     // Number of clouds to pre-populate on startup
+  minTopPercent: 5,         // Cloud boundary top
+  maxTopPercent: 60,        // Cloud boundary bottom (top 2/3rds)
+  minSizePx: 50,            // Minimum cloud width
+  maxSizePx: 120            // Maximum cloud width
+};
+
+
 
