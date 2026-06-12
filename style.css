@@ -42,6 +42,7 @@ body.theme-pink {
   padding: 0;
   -webkit-tap-highlight-color: transparent;
   user-select: none; /* Helpful for mobile app feel, especially holding buttons */
+  touch-action: manipulation;
 }
 
 input[type="text"] {
@@ -473,7 +474,7 @@ p.mode-description strong {
   cursor: pointer;
   transition: all 0.2s ease;
   background-color: var(--color-white);
-  height: 220px;
+  height: 264px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -667,5 +668,34 @@ p.mode-description strong {
   font-weight: 600;
 }
 
+/* Custom layout utility classes */
+.scroll-y {
+  overflow-y: auto;
+  flex-grow: 1;
+  min-height: 0;
+  padding-right: 4px;
+}
 
+/* Protip banner for players setup */
+.protip-banner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: -12px;
+  margin-bottom: 20px;
+  font-size: 0.9rem;
+  color: var(--color-text-muted);
+  font-weight: 500;
+}
 
+.protip-img {
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
+  object-fit: cover;
+}
+
+.protip-text {
+  line-height: 1.2;
+}

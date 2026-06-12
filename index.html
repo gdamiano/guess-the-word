@@ -43,6 +43,10 @@
         <!-- SCREEN 2: Set Up Players -->
         <section id="screen-setup-players" class="screen hidden">
           <h2 id="setup-players-title" class="screen-title">SET UP 1/3: PLAYERS</h2>
+          <div class="protip-banner">
+            <img class="protip-img" src="assets/portrait_sheep_happy.png?v=2" onerror="this.onerror=null; this.src='assets/portrait_sheep_neutral.png?v=2';" alt="Sheep">
+            <span class="protip-text">PROTIP: Sit around the room in this order!</span>
+          </div>
           <div class="setup-row">
             <span class="setup-label">Players</span>
             <div class="setup-controls">
@@ -136,14 +140,16 @@
 
         <!-- SCREEN 5: How To Play -->
         <section id="screen-how-to-play" class="screen hidden">
-          <h2 id="how-to-play-title" class="screen-title">HOW TO PLAY</h2>
-          <div id="how-to-play-list" class="how-to-play-list" style="overflow-y: auto; flex-grow: 1; min-height: 0; padding-right: 4px;">
-            <!-- Populated dynamically by app.js -->
-          </div>
-          <div class="flex-spacer"></div>
-          <div class="action-bar-bottom">
-            <button class="btn btn-cancel" id="btn-how-to-play-cancel">Cancel</button>
-            <button class="btn btn-primary" id="btn-how-to-play-play">Play</button>
+          <div class="scroll-y" style="display: flex; flex-direction: column; height: 100%;">
+            <h2 id="how-to-play-title" class="screen-title">HOW TO PLAY</h2>
+            <div id="how-to-play-list" class="how-to-play-list" style="margin-bottom: 24px;">
+              <!-- Populated dynamically by app.js -->
+            </div>
+            <div class="flex-spacer" style="min-height: 24px;"></div>
+            <div class="action-bar-bottom" style="margin-bottom: 8px; margin-top: auto;">
+              <button class="btn btn-cancel" id="btn-how-to-play-cancel">Cancel</button>
+              <button class="btn btn-primary" id="btn-how-to-play-play">Play</button>
+            </div>
           </div>
         </section>
 
