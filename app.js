@@ -24,7 +24,8 @@ const state = {
   wordGuessedCorrectly: false,
   wolvesFoundInput: 0,
   wolvesSurvivedTurns: 0,
-  keepRoles: false
+  keepRoles: false,
+  wolvesGuessedWord: false
 };
 
 // --- DOM ELEMENTS ---
@@ -42,7 +43,8 @@ const screens = {
   voteWolves: document.getElementById('screen-vote-wolves'),
   scoreboard: document.getElementById('screen-scoreboard'),
   about: document.getElementById('screen-about'),
-  voteWolvesGroup: document.getElementById('screen-vote-wolves-group')
+  voteWolvesGroup: document.getElementById('screen-vote-wolves-group'),
+  wolfGuess: document.getElementById('screen-wolf-guess')
 };
 
 const appFrame = document.getElementById('app-frame');
@@ -163,6 +165,7 @@ document.getElementById('btn-how-to-play-play').addEventListener('click', () => 
 function initSetupPlayers() {
   state.keepRoles = false;
   state.wolvesSurvivedTurns = 0;
+  state.wolvesGuessedWord = false;
   renderPlayerInputs();
   showScreen('setupPlayers');
 }
@@ -345,13 +348,12 @@ function updateRoleDisplays() {
 function initSetupRoles() {
   if (state.selectedGame === 'MODE_GROUP_GUESSERS') {
     document.getElementById('setup-row-shepherd').style.display = 'none';
-    document.getElementById('setup-row-secret-sheepdog').style.display = 'none';
+    document.getElementById('setup-row-secret-sheepdog').style.display = 'flex';
     document.getElementById('btn-sheepdog-minus').style.visibility = 'hidden';
     document.getElementById('btn-sheepdog-plus').style.visibility = 'hidden';
     
     state.rolesConfig.SHEPHERD = 0;
     state.rolesConfig.SHEEPDOG = 1;
-    state.rolesConfig.SECRET_SHEEPDOG = 0;
 
     let w = 1;
     for (let testW = Math.max(1, state.playerCount - 1); testW >= 1; testW--) {
@@ -583,6 +585,7 @@ function startGame() {
   state.triesLeft = 3;
   state.wordGuessedCorrectly = false;
   state.wolvesFoundInput = 0;
+  state.wolvesGuessedWord = false;
   
   state.passIndex = 0;
   showHandToScreen();
@@ -624,7 +627,7 @@ function initPlanningScreen() {
   // Construct the role description + secret word string to show inside the box (Feedback 11/13)
   let knowsWord = false;
   if (state.selectedGame === 'MODE_GROUP_GUESSERS') {
-    knowsWord = (roleKey === 'FLOCK' || roleKey === 'SHEEPDOG');
+    knowsWord = (roleKey === 'FLOCK' || roleKey === 'SHEEPDOG' || roleKey === 'SECRET_SHEEPDOG');
   } else {
     knowsWord = (roleKey === 'SHEPHERD' || roleKey === 'WOLF');
   }
@@ -695,7 +698,7 @@ function showHandBackShepherdScreen() {
 
 document.getElementById('btn-hand-back-shepherd-ready').addEventListener('click', () => {
   if (state.selectedGame === 'MODE_GROUP_GUESSERS') {
-    initMainPlay();
+    initVoteWolvesGroup();
   } else {
     initVoteWord();
   }
@@ -847,6 +850,19 @@ document.getElementById('btn-vote-wolves-continue').addEventListener('click', ()
 // 7B. VOTING FOR FOLLOW THE FLOCK
 // ==========================================
 function initVoteWolvesGroup() {
+  const modeData = STRINGS.MODES[state.selectedGame];
+  let desc = modeData.vote_wolves_desc || "Decide as a group on 1 player who is a wolf. The Sheepdog calls for the final vote.";
+  
+  const wolfCount = state.rolesConfig.WOLF;
+  if (wolfCount > 1) {
+    desc = desc.replace("1 player who is a wolf", `${wolfCount} players who are wolves`)
+               .replace("# player who is a wolf", `${wolfCount} players who are wolves`);
+  } else {
+    desc = desc.replace("1 player who is a wolf", "1 player who is a wolf")
+               .replace("# player who is a wolf", "1 player who is a wolf");
+  }
+  document.getElementById('vote-wolves-group-desc').textContent = desc;
+
   showScreen('voteWolvesGroup');
   updateVoteWolvesGroupUI();
 }
@@ -858,10 +874,7 @@ function updateVoteWolvesGroupUI() {
 
 document.getElementById('btn-vote-wolves-group-found').addEventListener('click', () => {
   state.wordGuessedCorrectly = true; // Meaning "found a wolf"
-  state.wolvesSurvivedTurns = 0;
-  state.keepRoles = false;
-  calculateScores();
-  initScoreboard();
+  initWolfGuess();
 });
 
 document.getElementById('btn-vote-wolves-group-keep-wolves').addEventListener('click', () => {
@@ -872,16 +885,28 @@ document.getElementById('btn-vote-wolves-group-keep-wolves').addEventListener('c
   initSetupTopics();
 });
 
-document.getElementById('btn-vote-wolves-group-new-wolves').addEventListener('click', () => {
-  state.wordGuessedCorrectly = false; // "wrong guess"
-  state.keepRoles = false;
-  state.wolvesSurvivedTurns = 0;
-  calculateScores();
-  initScoreboard();
+document.getElementById('btn-vote-wolves-group-back').addEventListener('click', () => {
+  showHandBackShepherdScreen();
 });
 
-document.getElementById('btn-vote-wolves-group-back').addEventListener('click', () => {
-  showScreen('mainPlay');
+// ==========================================
+// 7C. WOLVES GUESS THE WORD
+// ==========================================
+function initWolfGuess() {
+  document.getElementById('checkbox-wolves-guessed').checked = false;
+  showScreen('wolfGuess');
+}
+
+document.getElementById('btn-wolf-guess-back').addEventListener('click', () => {
+  initVoteWolvesGroup();
+});
+
+document.getElementById('btn-wolf-guess-continue').addEventListener('click', () => {
+  state.wolvesGuessedWord = document.getElementById('checkbox-wolves-guessed').checked;
+  state.wolvesSurvivedTurns = 0;
+  state.keepRoles = false;
+  calculateScores();
+  initScoreboard();
 });
 
 // ==========================================
@@ -892,7 +917,7 @@ function calculateScores() {
     const scoresConfig = STRINGS.MODES.MODE_GROUP_GUESSERS.SCORING;
     state.players.forEach(p => {
       const role = state.roles[p];
-      if (state.wordGuessedCorrectly) {
+      if (state.wordGuessedCorrectly && !state.wolvesGuessedWord) {
         if (role !== 'WOLF') {
           globalScores[p] += scoresConfig.MODE_GROUP_GUESSERS_WOLF_FOUND;
         }
@@ -934,11 +959,17 @@ function getPointsReason(p) {
   const reasons = [];
 
   if (state.selectedGame === 'MODE_GROUP_GUESSERS') {
-    if (state.wordGuessedCorrectly) {
+    if (state.wordGuessedCorrectly && !state.wolvesGuessedWord) {
       if (role !== 'WOLF') reasons.push("Found the wolf!");
       if (role === 'SHEEPDOG') reasons.push("Led the vote!");
     } else {
-      if (role === 'WOLF') reasons.push("Fooled the flock!");
+      if (role === 'WOLF') {
+        if (state.wolvesGuessedWord) {
+          reasons.push("Guessed the word!");
+        } else {
+          reasons.push("Fooled the flock!");
+        }
+      }
     }
     return reasons.join(' ');
   }
@@ -967,7 +998,8 @@ function initScoreboard() {
   
   // Set dynamic winner title and color on the scoreboard screen
   const titleEl = document.getElementById('scoreboard-title');
-  if (state.wordGuessedCorrectly) {
+  const flockWonRound = state.selectedGame === 'MODE_GROUP_GUESSERS' ? (state.wordGuessedCorrectly && !state.wolvesGuessedWord) : state.wordGuessedCorrectly;
+  if (flockWonRound) {
     titleEl.textContent = "THE FLOCK WINS!";
     titleEl.style.color = "#0284c7"; // Blue
   } else {
@@ -1000,7 +1032,8 @@ function initScoreboard() {
     // Create portrait image
     const role = state.roles[p];
     const isFlockRole = (role !== 'WOLF');
-    const isWin = (isFlockRole === state.wordGuessedCorrectly);
+    const flockWonRound = state.selectedGame === 'MODE_GROUP_GUESSERS' ? (state.wordGuessedCorrectly && !state.wolvesGuessedWord) : state.wordGuessedCorrectly;
+    const isWin = (isFlockRole === flockWonRound);
     const outcome = isWin ? 'win' : 'lose';
     const configKey = `ask_the_expert_${roleToConfigTerm[role] || 'team'}_${outcome}`;
     const filename = PORTRAIT_CONFIG[configKey] || fallbackImages[role] || 'portrait_sheep_neutral.png';
@@ -1044,10 +1077,17 @@ function initScoreboard() {
   showScreen('scoreboard');
 }
 
-document.getElementById('btn-scoreboard-play-again').addEventListener('click', () => {
-  // Move Shepherd and Sheepdog down the line by 1 (Feedback 21)
+document.getElementById('btn-scoreboard-play-again-same').addEventListener('click', () => {
+  state.keepRoles = true;
+  initSetupTopics();
+});
+
+document.getElementById('btn-scoreboard-play-again-shuffle').addEventListener('click', () => {
+  state.keepRoles = false;
+  state.wolvesSurvivedTurns = 0;
+  state.wolvesGuessedWord = false;
   state.shepherdIndex = (state.shepherdIndex + 1) % state.players.length;
-  initSetupRoles();
+  initSetupPlayers();
 });
 
 // ==========================================

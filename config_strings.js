@@ -63,19 +63,19 @@ const STRINGS = {
         FLOCK: {
           id: "FLOCK",
           name: "Sheep",
-          desc: "Don't tell anyone: you're a sheep.\n\nYou may ask the Shepherd one yes/no question ABOUT the secret word.\n\nDon't guess yet or ask 'is the word ___?' You'll do that when everyone has a turn.",
+          desc: "Don't tell: you're a sheep.\n\nYou may ask the Shepherd one yes/no question ABOUT the secret word.\n\nDon't guess yet ('is the word ___?') You'll do that when everyone has a turn.",
           instruction: "You're on the team.\nAnswer: Unknown"
         },
         WOLF: {
           id: "WOLF",
           name: "Wolf",
-          desc: "Don't tell anyone: you're a wolf.\n\nYou may ask the Shepherd one yes/no question ABOUT the secret word.\n\nTrick the sheep team so they do not guess this word: ",
+          desc: "Don't tell: you're a wolf.\n\nYou may ask the Shepherd one yes/no question ABOUT the secret word.\n\nTrick the sheep team so they don't guess this word: ",
           instruction: "You're a wolf.\nAnswer: "
         },
         SHEEPDOG: {
           id: "SHEEPDOG",
           name: "Sheepdog",
-          desc: "Tell everyone: you're the main Sheepdog!\n\nYou may ask the Shepherd one yes/no question ABOUT the secret word.\n\nDon't guess yet or ask 'is the word ___?' You'll run guesses and votes later in the round.",
+          desc: "Tell everyone: you're the main Sheepdog!\n\nYou may ask the Shepherd one yes/no question ABOUT the secret word.\n\nDon't guess yet ('is the word ___?') You'll lead the guesses later in the round.",
           instruction: "Helps the team and runs votes."
         },
         SECRET_SHEEPDOG: {
@@ -108,20 +108,26 @@ const STRINGS = {
         SHEEPDOG: {
           id: "SHEEPDOG",
           name: "Sheepdog",
-          desc: "starts the round, and calls the final vote at the end.",
+          desc: "Tell everyone: you're the main Sheepdog!\nSay one word RELATED TO the secret word.\n\nThe secret word is: ",
           instruction: "You know the answer! Start the round by saying a word related to:\nAnswer: "
         },
         FLOCK: {
           id: "FLOCK",
           name: "Flock",
-          desc: "says a related word.",
+          desc: "Don't tell: you're a sheep.\n\Say one word RELATED TO the secret word.\n\nThe secret word is: ",
           instruction: "You know the answer! When it's your turn, say a word related to:\nAnswer: "
         },
         WOLF: {
           id: "WOLF",
           name: "Wolf",
-          desc: "DON'T know the word. Fake it!",
+          desc: "Don't tell: you're a wolf.\n\Say one word that SOUNDS LIKE the other players' words.\n\nTry to blend in: fake it!",
           instruction: "You're the wolf. You DON'T know the word! Listen to others and say a word that fits in.\nAnswer: Unknown"
+        },
+        SECRET_SHEEPDOG: {
+          id: "SECRET_SHEEPDOG",
+          name: "Secret Sheepdog",
+          desc: "Don't tell: you're a secret sheepdog!\nSay one word RELATED TO the secret word.\n\nThe secret word is: '",
+          instruction: "Gets one extra guess as to who's a wolf."
         }
       },
       SCORING: {

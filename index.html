@@ -281,13 +281,32 @@
           <p id="vote-wolves-group-tries" style="font-weight: bold; font-size: 1.1rem; color: var(--theme-color-dark); margin-bottom: 20px;">3 tries left</p>
           
           <button class="btn btn-success" id="btn-vote-wolves-group-found" style="width: 100%; margin-bottom: 16px;">FOUND A WOLF!</button>
-          <button class="btn btn-cancel" id="btn-vote-wolves-group-keep-wolves" style="width: 100%; margin-bottom: 16px;">WRONG (keep wolves)</button>
-          <button class="btn btn-cancel" id="btn-vote-wolves-group-new-wolves" style="width: 100%; margin-bottom: 24px;">WRONG (new wolves)</button>
+          <button class="btn btn-cancel" id="btn-vote-wolves-group-keep-wolves" style="width: 100%; margin-bottom: 24px;">WRONG (keep wolves)</button>
           
           <div class="flex-spacer"></div>
 
           <div class="action-bar-bottom">
             <button class="btn btn-cancel" id="btn-vote-wolves-group-back">Back</button>
+          </div>
+        </section>
+
+        <!-- SCREEN 10C: Wolves Guess The Word -->
+        <section id="screen-wolf-guess" class="screen hidden text-center">
+          <h2 class="screen-title" style="margin-bottom: 20px;">GUESS THE WORD</h2>
+          <p class="mode-description" style="font-size: 1rem; margin-bottom: 32px; padding: 0 10px;">
+            The Wolf team has one try to guess the secret word.
+          </p>
+          
+          <div class="setup-row" style="border-bottom: none; justify-content: center; gap: 12px; margin-bottom: 24px; cursor: pointer; display: flex; align-items: center;">
+            <input type="checkbox" id="checkbox-wolves-guessed" style="width: 24px; height: 24px; cursor: pointer;">
+            <label for="checkbox-wolves-guessed" class="setup-label" style="cursor: pointer; margin: 0;">WOLVES GUESSED IT</label>
+          </div>
+          
+          <div class="flex-spacer"></div>
+
+          <div class="action-bar-bottom">
+            <button class="btn btn-cancel" id="btn-wolf-guess-back">Back</button>
+            <button class="btn btn-primary" id="btn-wolf-guess-continue">Continue</button>
           </div>
         </section>
 
@@ -301,7 +320,8 @@
           
           <div class="flex-spacer"></div>
 
-          <button class="btn btn-primary" id="btn-scoreboard-play-again" style="width: 100%;">Play Again</button>
+          <button class="btn btn-primary" id="btn-scoreboard-play-again-same" style="width: 100%; margin-bottom: 12px;">Play Again (same roles)</button>
+          <button class="btn btn-secondary" id="btn-scoreboard-play-again-shuffle" style="width: 100%;">Play Again (shuffle roles)</button>
         </section>
 
         <!-- SCREEN 12: About Screen -->
