@@ -23,7 +23,7 @@ const STRINGS = {
 <h4>Ask the Shepherd</h4>
 <p>In this mode, one player is the Shepherd who knows the secret word. Others ask yes/no questions in circle order. Watch out for the Wolves who also know the secret word and are trying to subtly mislead the team into choosing the wrong word. The Sheepdogs must organize the final votes for guessing the correct word and rooting out the hidden wolves.</p>
 
-<h4>Follow the Flock</h4>
+<h4>Fool the Flock</h4>
 <p>All players except the Wolves know the secret word. Players take turns saying a single word related to the secret word. The Wolves must bluff and fit in without knowing the word, then guess the word if they are voted out.</p>
 
 <h4>AI Disclosures</h4>
@@ -93,7 +93,7 @@ const STRINGS = {
     },
     MODE_GROUP_GUESSERS: {
       id: "MODE_GROUP_GUESSERS",
-      title: "Follow the Flock",
+      title: "Fool the Flock",
       description: "One player doesn't know the secret word. Everyone else knows it. Go around the room saying one related word. Don't get caught!",
       themeClass: "theme-pink",
       setup_players_title: "SET UP 1/3: PLAYERS",

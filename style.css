@@ -393,6 +393,20 @@ p.mode-description strong {
   color: var(--theme-color-dark);
 }
 
+.btn-mode-subtitle {
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--color-text-muted);
+  margin-top: 6px;
+  transition: color 0.2s ease;
+}
+
+.btn-mode-select.active .btn-mode-subtitle {
+  color: var(--theme-color-dark);
+  opacity: 0.85;
+}
+
 /* Common Text Utilities */
 .text-center {
   text-align: center;
