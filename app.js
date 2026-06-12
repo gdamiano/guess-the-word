@@ -962,14 +962,17 @@ function calculateScores() {
     const scoresConfig = STRINGS.MODES.MODE_GROUP_GUESSERS.SCORING;
     state.players.forEach(p => {
       const role = state.roles[p];
-      if (state.wordGuessedCorrectly && !state.wolvesGuessedWord) {
+      // Flock gets points if they found the wolves
+      if (state.wordGuessedCorrectly) {
         if (role !== 'WOLF') {
           globalScores[p] += scoresConfig.MODE_GROUP_GUESSERS_WOLF_FOUND;
         }
         if (role === 'SHEEPDOG') {
           globalScores[p] += scoresConfig.MODE_GROUP_GUESSERS_SHEEPDOG_EXTRA;
         }
-      } else {
+      }
+      // Wolves get points if flock failed to find them, OR if wolves guessed the word
+      if (!state.wordGuessedCorrectly || state.wolvesGuessedWord) {
         if (role === 'WOLF') {
           globalScores[p] += scoresConfig.MODE_GROUP_GUESSERS_WOLF_WRONG;
         }
@@ -1004,17 +1007,14 @@ function getPointsReason(p) {
   const reasons = [];
 
   if (state.selectedGame === 'MODE_GROUP_GUESSERS') {
-    if (state.wordGuessedCorrectly && !state.wolvesGuessedWord) {
+    if (state.wordGuessedCorrectly) {
       if (role !== 'WOLF') reasons.push("Found the wolf!");
       if (role === 'SHEEPDOG') reasons.push("Led the vote!");
-    } else {
-      if (role === 'WOLF') {
-        if (state.wolvesGuessedWord) {
-          reasons.push("Guessed the word!");
-        } else {
-          reasons.push("Fooled the flock!");
-        }
-      }
+    }
+    if (!state.wordGuessedCorrectly) {
+      if (role === 'WOLF') reasons.push("Fooled the flock!");
+    } else if (state.wolvesGuessedWord) {
+      if (role === 'WOLF') reasons.push("Guessed the word!");
     }
     return reasons.join(' ');
   }
