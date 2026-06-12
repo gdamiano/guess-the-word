@@ -899,39 +899,35 @@ document.getElementById('btn-vote-wolves-continue').addEventListener('click', ()
 // 7B. VOTING FOR FOLLOW THE FLOCK
 // ==========================================
 function initVoteWolvesGroup() {
-  const modeData = STRINGS.MODES[state.selectedGame];
-  let desc = modeData.vote_wolves_desc || "Decide as a group on 1 player who is a wolf. The Sheepdog calls for the final vote.";
-  
   const wolfCount = state.rolesConfig.WOLF;
-  if (wolfCount > 1) {
-    desc = desc.replace("1 player who is a wolf", `${wolfCount} players who are wolves`)
-               .replace("# player who is a wolf", `${wolfCount} players who are wolves`);
-  } else {
-    desc = desc.replace("1 player who is a wolf", "1 player who is a wolf")
-               .replace("# player who is a wolf", "1 player who is a wolf");
-  }
-  document.getElementById('vote-wolves-group-desc').textContent = desc;
+  document.getElementById('vote-wolves-group-desc').textContent = `Decide as a group on ${wolfCount} ${wolfCount === 1 ? 'player who is a wolf' : 'players who are wolves'}. The Sheepdog calls for the final vote.`;
 
-  showScreen('voteWolvesGroup');
+  state.wolvesFoundInput = 0; // Reset to 0, centered
   updateVoteWolvesGroupUI();
+  showScreen('voteWolvesGroup');
 }
 
 function updateVoteWolvesGroupUI() {
-  const triesEl = document.getElementById('vote-wolves-group-tries');
-  triesEl.textContent = `Wolves survived ${state.wolvesSurvivedTurns} ${state.wolvesSurvivedTurns === 1 ? 'turn' : 'turns'}`;
+  document.getElementById('vote-wolves-group-display').textContent = state.wolvesFoundInput;
 }
 
-document.getElementById('btn-vote-wolves-group-found').addEventListener('click', () => {
-  state.wordGuessedCorrectly = true; // Meaning "found a wolf"
-  initWolfGuess();
+document.getElementById('btn-vote-wolves-group-plus').addEventListener('click', () => {
+  if (state.wolvesFoundInput < state.rolesConfig.WOLF) {
+    state.wolvesFoundInput++;
+    updateVoteWolvesGroupUI();
+  }
 });
 
-document.getElementById('btn-vote-wolves-group-keep-wolves').addEventListener('click', () => {
-  state.wordGuessedCorrectly = false; // "wrong guess"
-  state.keepRoles = true;
-  calculateScores();
-  state.wolvesSurvivedTurns++;
-  initSetupTopics();
+document.getElementById('btn-vote-wolves-group-minus').addEventListener('click', () => {
+  if (state.wolvesFoundInput > 0) {
+    state.wolvesFoundInput--;
+    updateVoteWolvesGroupUI();
+  }
+});
+
+document.getElementById('btn-vote-wolves-group-continue').addEventListener('click', () => {
+  state.wordGuessedCorrectly = (state.wolvesFoundInput === state.rolesConfig.WOLF);
+  initWolfGuess();
 });
 
 document.getElementById('btn-vote-wolves-group-back').addEventListener('click', () => {
