@@ -573,28 +573,7 @@ function startGame() {
       [pool[i], pool[j]] = [pool[j], pool[i]];
     }
 
-    // Secret Rule: never assign the player right after the sheepdog (rotating leader) to be a wolf (Follow the Flock only)
-    if (state.selectedGame === 'MODE_GROUP_GUESSERS') {
-      const nextPlayer = state.players[(state.shepherdIndex + 1) % state.players.length];
-      const numPoolSheepdogs = 0;
-      const wolfStart = numPoolSheepdogs;
-      const wolfEnd = numPoolSheepdogs + state.rolesConfig.WOLF;
 
-      const nextPlayerIdx = pool.indexOf(nextPlayer);
-      if (nextPlayerIdx >= wolfStart && nextPlayerIdx < wolfEnd) {
-        let swapIdx = -1;
-        for (let i = 0; i < pool.length; i++) {
-          if (i < wolfStart || i >= wolfEnd) {
-            swapIdx = i;
-            break;
-          }
-        }
-        if (swapIdx !== -1) {
-          [pool[nextPlayerIdx], pool[swapIdx]] = [pool[swapIdx], pool[nextPlayerIdx]];
-        }
-      }
-    }
-    
     let pIdx = 0;
     // Sequentially allocate from the shuffled pool
     const numPoolSheepdogs = state.selectedGame === 'MODE_GROUP_GUESSERS' ? 0 : state.rolesConfig.SHEEPDOG;
@@ -616,12 +595,7 @@ function startGame() {
   state.passSequence = [];
   state.passSequence.push(shepherdPlayer);
   
-  // Find Main Sheepdog (if any) and place them second
-  const sheepdog = state.players.find(p => state.roles[p] === 'SHEEPDOG' && p !== shepherdPlayer);
-  if (sheepdog) {
-    state.passSequence.push(sheepdog);
-  }
-  
+
   // Add all other players in circle order starting from Shepherd index
   for (let i = 0; i < state.players.length; i++) {
     const p = state.players[(state.shepherdIndex + i) % state.players.length];
@@ -1122,12 +1096,7 @@ function initScoreboard() {
   showScreen('scoreboard');
 }
 
-document.getElementById('btn-scoreboard-play-again-same').addEventListener('click', () => {
-  state.keepRoles = true;
-  initSetupTopics();
-});
-
-document.getElementById('btn-scoreboard-play-again-shuffle').addEventListener('click', () => {
+document.getElementById('btn-scoreboard-play-again').addEventListener('click', () => {
   state.keepRoles = false;
   state.wolvesSurvivedTurns = 0;
   state.wolvesGuessedWord = false;

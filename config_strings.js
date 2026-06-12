@@ -108,25 +108,25 @@ const STRINGS = {
         SHEEPDOG: {
           id: "SHEEPDOG",
           name: "Sheepdog",
-          desc: "Tell everyone: you're the main Sheepdog!\nSay one word RELATED TO the secret word.\n\nThe secret word is: ",
+          desc: "You're the main Sheepdog!\n• Tell everyone you're the Sheepdog.\n• Say one word RELATED TO the secret word.\n• The secret word is: ",
           instruction: "You know the answer! Start the round by saying a word related to:\nAnswer: "
         },
         FLOCK: {
           id: "FLOCK",
-          name: "Flock",
-          desc: "Don't tell: you're a sheep.\n\Say one word RELATED TO the secret word.\n\nThe secret word is: ",
+          name: "Sheep",
+          desc: "You're a regular sheep.\n• Don't tell anyone.\n• Say one word RELATED TO the secret word.\n• The secret word is: ",
           instruction: "You know the answer! When it's your turn, say a word related to:\nAnswer: "
         },
         WOLF: {
           id: "WOLF",
           name: "Wolf",
-          desc: "Don't tell: you're a wolf.\n\Say one word that SOUNDS LIKE the other players' words.\n\nTry to blend in: fake it!",
+          desc: "You're a hidden wolf.\n• Don't tell anyone.\n• Say one word that SOUNDS LIKE the other players' words.\n• Try to blend in: fake it!",
           instruction: "You're the wolf. You DON'T know the word! Listen to others and say a word that fits in.\nAnswer: Unknown"
         },
         SECRET_SHEEPDOG: {
           id: "SECRET_SHEEPDOG",
           name: "Secret Sheepdog",
-          desc: "Don't tell: you're a secret sheepdog!\nSay one word RELATED TO the secret word.\n\nThe secret word is: '",
+          desc: "You're a SECRET Sheepdog.\n• Don't tell anyone.\n• Say one word RELATED TO the secret word.\n• The secret word is: ",
           instruction: "Gets one extra guess as to who's a wolf."
         }
       },
