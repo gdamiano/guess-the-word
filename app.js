@@ -49,7 +49,8 @@ const screens = {
 
 const appFrame = document.getElementById('app-frame');
 const appHeaderTitle = document.getElementById('app-header-title');
-const btnAppClose = document.getElementById('btn-app-close');
+const btnAppSettings = document.getElementById('btn-app-settings');
+const settingsMenu = document.getElementById('settings-menu');
 
 // --- ROUTING ---
 function showScreen(screenKey) {
@@ -61,16 +62,32 @@ function showScreen(screenKey) {
     }
   });
 
+  // Always hide settings menu when navigating
+  if (settingsMenu) {
+    settingsMenu.classList.add('hidden');
+  }
+
   // Manage header visibility
   if (screenKey === 'home') {
     appHeaderTitle.textContent = STRINGS.HEADER_CHOOSE_GAME;
-    btnAppClose.style.display = 'none';
   } else if (screenKey === 'about') {
     appHeaderTitle.textContent = STRINGS.ABOUT_TITLE || "About";
-    btnAppClose.style.display = 'none';
   } else {
     appHeaderTitle.textContent = STRINGS.MODES[state.selectedGame].title;
-    btnAppClose.style.display = 'flex';
+  }
+
+  // Manage End Game menu item availability
+  const btnEndGame = document.getElementById('btn-settings-end-game');
+  if (btnEndGame) {
+    if (screenKey === 'home' || screenKey === 'about') {
+      btnEndGame.disabled = true;
+      btnEndGame.style.opacity = '0.5';
+      btnEndGame.style.cursor = 'not-allowed';
+    } else {
+      btnEndGame.disabled = false;
+      btnEndGame.style.opacity = '1';
+      btnEndGame.style.cursor = 'pointer';
+    }
   }
 }
 
@@ -129,11 +146,43 @@ function selectMode(modeId) {
 document.getElementById('btn-mode-expert').addEventListener('click', () => selectMode('MODE_ONE_EXPERT'));
 document.getElementById('btn-mode-group').addEventListener('click', () => selectMode('MODE_GROUP_GUESSERS'));
 
-btnAppClose.addEventListener('click', () => {
+// Settings menu toggle
+btnAppSettings.addEventListener('click', (e) => {
+  e.stopPropagation();
+  settingsMenu.classList.toggle('hidden');
+});
+
+// Close menu when clicking anywhere else
+document.addEventListener('click', (e) => {
+  if (!settingsMenu.classList.contains('hidden') && !settingsMenu.contains(e.target) && e.target !== btnAppSettings) {
+    settingsMenu.classList.add('hidden');
+  }
+});
+
+// End Game option
+document.getElementById('btn-settings-end-game').addEventListener('click', () => {
   if (confirm("Are you sure you want to quit the current game?")) {
+    settingsMenu.classList.add('hidden');
     selectMode('MODE_ONE_EXPERT');
     showScreen('home');
   }
+});
+
+// Reload Page option
+document.getElementById('btn-settings-reload').addEventListener('click', () => {
+  window.location.reload();
+});
+
+// Break Cache option
+document.getElementById('btn-settings-break-cache').addEventListener('click', () => {
+  const currentUrl = new URL(window.location.href);
+  currentUrl.searchParams.set('cb', Date.now());
+  window.location.href = currentUrl.toString();
+});
+
+// Close Menu option
+document.getElementById('btn-settings-close-menu').addEventListener('click', () => {
+  settingsMenu.classList.add('hidden');
 });
 
 document.getElementById('btn-home-about').addEventListener('click', () => {

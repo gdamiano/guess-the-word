@@ -2,7 +2,7 @@ const STRINGS = {
   APP_TITLE: "Fool the Flock!",
   HEADER_CHOOSE_GAME: "Fool the Flock!",
   HEADER_ASK_SHEPHERD: "Ask the Shepherd",
-  HEADER_FOLLOW_FLOCK: "Follow the Flock",
+  HEADER_FOLLOW_FLOCK: "Fool the Flock",
   
   BTN_LOG_PLAYERS: "Log Players",
   BTN_ABOUT: "About",

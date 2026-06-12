@@ -12,7 +12,14 @@
     <div id="app-frame" class="app-frame theme-blue">
       <header class="app-header">
         <h1 id="app-header-title" class="app-header-title">Words & Wolves</h1>
-        <button id="btn-app-close" class="btn-close" aria-label="Close" style="display: none;">✖</button>
+        <button id="btn-app-settings" class="btn-settings" aria-label="Settings">⚙</button>
+        <!-- Settings Dropdown Menu -->
+        <div id="settings-menu" class="settings-menu hidden">
+          <button class="settings-menu-item" id="btn-settings-end-game">End Game</button>
+          <button class="settings-menu-item" id="btn-settings-reload">Reload Page</button>
+          <button class="settings-menu-item" id="btn-settings-break-cache">Break Cache</button>
+          <button class="settings-menu-item" id="btn-settings-close-menu">Close Menu</button>
+        </div>
       </header>
 
       <main id="app-content" class="app-content">
