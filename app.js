@@ -665,17 +665,60 @@ function initPlanningScreen() {
   // All planning screens show the box now (Feedback 13)
   document.getElementById('secret-word-box').style.display = 'flex';
   
+  const box = document.getElementById('secret-word-box');
+  if (box && typeof box.resetLock === 'function') {
+    box.resetLock();
+  }
+  
   showScreen('planning');
 }
 
 // Hold to reveal logic
-function setupSecretWordBox(boxId, revealId, holdId) {
+function setupSecretWordBox(boxId, revealId, holdId, buttonId, originalText) {
   const box = document.getElementById(boxId);
   const reveal = document.getElementById(revealId);
   const hold = document.getElementById(holdId);
+  const btn = document.getElementById(buttonId);
   
-  const show = (e) => { e.preventDefault(); hold.classList.add('hidden'); reveal.classList.remove('hidden'); };
-  const hide = (e) => { e.preventDefault(); hold.classList.remove('hidden'); reveal.classList.add('hidden'); };
+  let holdTimer = null;
+  let hasUnlocked = false;
+
+  box.resetLock = () => {
+    hasUnlocked = false;
+    if (holdTimer) clearTimeout(holdTimer);
+    btn.disabled = true;
+    btn.classList.add('btn-filling');
+    btn.classList.remove('active-fill');
+    btn.textContent = "view your secret above";
+  };
+
+  const show = (e) => {
+    e.preventDefault();
+    hold.classList.add('hidden');
+    reveal.classList.remove('hidden');
+    
+    if (!hasUnlocked) {
+      btn.classList.add('active-fill');
+      if (holdTimer) clearTimeout(holdTimer);
+      holdTimer = setTimeout(() => {
+        hasUnlocked = true;
+        btn.classList.remove('btn-filling', 'active-fill');
+        btn.disabled = false;
+        btn.textContent = originalText;
+      }, 2000);
+    }
+  };
+  
+  const hide = (e) => {
+    e.preventDefault();
+    hold.classList.remove('hidden');
+    reveal.classList.add('hidden');
+    
+    if (!hasUnlocked) {
+      btn.classList.remove('active-fill');
+      if (holdTimer) clearTimeout(holdTimer);
+    }
+  };
   
   box.addEventListener('mousedown', show);
   box.addEventListener('touchstart', show);
@@ -684,8 +727,8 @@ function setupSecretWordBox(boxId, revealId, holdId) {
   box.addEventListener('mouseleave', hide);
 }
 
-setupSecretWordBox('secret-word-box', 'secret-word-reveal-content', 'secret-word-hold-content');
-setupSecretWordBox('main-secret-word-box', 'main-secret-word-reveal-content', 'main-secret-word-hold-content');
+setupSecretWordBox('secret-word-box', 'secret-word-reveal-content', 'secret-word-hold-content', 'btn-planning-next', 'PRESS & PASS THE PHONE');
+setupSecretWordBox('main-secret-word-box', 'main-secret-word-reveal-content', 'main-secret-word-hold-content', 'btn-main-play-vote', "Let's Vote");
 
 document.getElementById('btn-planning-next').addEventListener('click', () => {
   state.passIndex++;
@@ -745,6 +788,11 @@ function initMainPlay() {
     mainIllustrationImg.src = 'assets/pass_to_sheepdog.png?v=2';
   } else {
     mainIllustrationImg.src = 'assets/mode_ask_the_expert.png?v=2';
+  }
+
+  const mainBox = document.getElementById('main-secret-word-box');
+  if (mainBox && typeof mainBox.resetLock === 'function') {
+    mainBox.resetLock();
   }
 
   showScreen('mainPlay');

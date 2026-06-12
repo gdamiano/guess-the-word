@@ -326,6 +326,24 @@ p.mode-description strong {
   cursor: not-allowed;
 }
 
+/* Hold-to-reveal button filling animation */
+.btn-filling {
+  background: linear-gradient(to right, var(--color-action) 50%, var(--color-action-disabled) 50%) !important;
+  background-size: 200% 100% !important;
+  background-position: right bottom !important;
+  transition: none !important;
+  color: var(--color-text-muted) !important;
+  opacity: 1 !important;
+  cursor: not-allowed !important;
+  border: none !important;
+}
+
+.btn-filling.active-fill {
+  background-position: left bottom !important;
+  transition: background-position 2s linear !important;
+  color: var(--theme-color-dark) !important;
+}
+
 .btn:active:not(:disabled) {
   transform: scale(0.97);
 }

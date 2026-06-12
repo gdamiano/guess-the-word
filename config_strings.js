@@ -31,7 +31,7 @@ const STRINGS = {
 
 <p style="margin-top: 16px; font-size: 0.85rem; color: var(--color-text-muted);">Developed with premium aesthetics and dynamic visual themes.</p>`,
 
-  TXT_HOLD_TO_VIEW: "HOLD TO VIEW\nyour secret",
+  TXT_HOLD_TO_VIEW: "HOLD THIS BOX\n to view your secret",
   TXT_PRESS_PASS: "I'M READY!",
   TXT_IM_SHEPHERD: "I'm the Shepherd!",
 
@@ -63,25 +63,25 @@ const STRINGS = {
         FLOCK: {
           id: "FLOCK",
           name: "Sheep",
-          desc: "Don't tell: you're a sheep.\n\nYou may ask the Shepherd one yes/no question ABOUT the secret word.\n\nDon't guess yet ('is the word ___?') You'll do that when everyone has a turn.",
+		  desc: "You're a regular sheep.\n• Don't tell anyone.\n• Ask one yes/no question ABOUT the secret word.\n• Don't guess the word yet.",
           instruction: "You're on the team.\nAnswer: Unknown"
         },
         WOLF: {
           id: "WOLF",
           name: "Wolf",
-          desc: "Don't tell: you're a wolf.\n\nYou may ask the Shepherd one yes/no question ABOUT the secret word.\n\nTrick the sheep team so they don't guess this word: ",
+          desc: "You're a hidden wolf.\n• Don't tell anyone.\n• Ask one yes/no question ABOUT the secret word.\n• The secret word is: ",
           instruction: "You're a wolf.\nAnswer: "
         },
         SHEEPDOG: {
           id: "SHEEPDOG",
           name: "Sheepdog",
-          desc: "Tell everyone: you're the main Sheepdog!\n\nYou may ask the Shepherd one yes/no question ABOUT the secret word.\n\nDon't guess yet ('is the word ___?') You'll lead the guesses later in the round.",
+		  desc: "You're the main Sheepdog!\n• Tell everyone you're the Sheepdog.\n• Ask one yes/no question ABOUT the secret word.\n• Don't guess the word yet.",
           instruction: "Helps the team and runs votes."
         },
         SECRET_SHEEPDOG: {
           id: "SECRET_SHEEPDOG",
           name: "Secret Sheepdog",
-          desc: "Don't tell anyone: you're a secret sheepdog!\n\nYou may ask the Shepherd one yes/no question ABOUT the secret word.\n\nDon't guess yet or ask 'is the word ___?'",
+		  desc: "You're a SECRET Sheepdog.\n• Don't tell anyone.\n• Say one word RELATED TO the secret word.\n• The secret word is: ",
           instruction: "Gets one extra guess as to who's a wolf."
         }
       },
