@@ -118,5 +118,7 @@ A standardized workflow governs how media assets are structured, scaled, and man
 * [x] Implement position-based wolf avoidance secret rule for the group mode.
 
 ### Phase 4: Polish fixes
-* [ ] Review and clean up all user-facing text
+* [x] Review and clean up user-facing text after 5/11 play
 * [ ] Add a dark horizon floor to the background
+* [ ] Original Settings button icon
+* [ ] Review and clean up user-facing text after MI house first play

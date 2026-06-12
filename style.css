@@ -290,7 +290,7 @@ p.mode-description {
   font-size: 0.9rem;
   color: var(--color-text-body);
   line-height: 1.5;
-  margin-top: 16px;
+  margin-top: 4px;
 }
 
 p.mode-description strong {
@@ -366,7 +366,7 @@ p.mode-description strong {
 .game-options {
   display: flex;
   gap: 12px;
-  margin-bottom: 24px;
+  margin-bottom: 12px;
 }
 
 .btn-mode-select {
