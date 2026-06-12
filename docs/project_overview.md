@@ -82,10 +82,10 @@ A standardized workflow governs how media assets are structured, scaled, and man
 * **Roles:** 1 Shepherd (fixed), Wolves (mislead), Sheepdog (confirms guesses, goes first after Shepherd), Secret Sheepdog (hidden voter), and Flock (common guessers).
 * **Context:** A single secret word is chosen.
 * **Information:** Shepherd and Wolves know the secret word. Others know only their role description.
-* **Gameplay:** Untimed round. Players ask the Shepherd yes/no questions in circle order.
+* **Gameplay:** Untimed round. The flow bypasses the main play screen, going straight from the "hand to shepherd" handoff to the Guess the Word screen.
 * **Endgame (Two-Step Voting):**
-  * **Guess the Word (10A):** The team gets 3 tries to guess the word. Tries remaining are dynamically displayed, and the wrong button adjusts label state based on tries remaining ("try again" vs "team loses").
-  * **Find the Wolves (10B):** The team votes on who the wolves were. Accusations replace the count dynamically and adjust for Secret Sheepdog counts if active.
+  * **Guess the Word (10A):** The team gets 3 tries to guess the word. Tries remaining are dynamically shown as a conditional subtitle text block (`vote_word_tries_left` for 2+ tries, or `vote_word_last_try` for 1 try remaining). If a guess is wrong and tries remain, it initiates a new pass-the-phone reveal loop starting with the player right after the Shepherd.
+  * **Find the Wolves (10B):** The team votes on who the wolves were. Accusations are capped at the exact Wolf count, but warning text dynamically alerts players of Secret Sheepdog counts in the round.
 * **Scoreboard:** Dynamically displays **"THE FLOCK WINS!"** in blue or **"THE WOLVES WIN!"** in red, showing point breakdown reasons under player names. Clicking "Play Again" shifts the Shepherd and Sheepdog roles down by 1 person.
 
 ---

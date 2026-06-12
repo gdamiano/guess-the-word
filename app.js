@@ -629,9 +629,9 @@ function initPlanningScreen() {
     knowsWord = (roleKey === 'SHEPHERD' || roleKey === 'WOLF');
   }
   
-  let revealText = `${roleConfig.name}: ${roleConfig.desc}`;
+  let revealText = `${roleConfig.desc}`;
   if (knowsWord) {
-    revealText += ` Word: ${state.secretWord}`;
+    revealText += ` ${state.secretWord}`;
   }
   
   document.getElementById('secret-word-display').textContent = revealText;
@@ -694,7 +694,11 @@ function showHandBackShepherdScreen() {
 }
 
 document.getElementById('btn-hand-back-shepherd-ready').addEventListener('click', () => {
-  initMainPlay();
+  if (state.selectedGame === 'MODE_GROUP_GUESSERS') {
+    initMainPlay();
+  } else {
+    initVoteWord();
+  }
 });
 
 // ==========================================
@@ -736,8 +740,17 @@ function initVoteWord() {
   document.getElementById('vote-word-title').textContent = modeData.vote_word_title || "GUESS THE WORD";
   document.getElementById('vote-word-desc').textContent = modeData.vote_word_desc || "";
   
-  // Update tries left text subtitle
-  document.getElementById('vote-word-tries-subtitle').textContent = `${state.triesLeft} ${state.triesLeft === 1 ? 'try' : 'tries'} left`;
+  // Update tries left text subtitle based on tries left config
+  const subtitleEl = document.getElementById('vote-word-tries-subtitle');
+  if (state.triesLeft >= 2) {
+    let text = modeData.vote_word_tries_left || "The team has # tries left.";
+    text = text.replace('#', state.triesLeft);
+    subtitleEl.textContent = text;
+  } else if (state.triesLeft === 1) {
+    subtitleEl.textContent = modeData.vote_word_last_try || "This is the last try!";
+  } else {
+    subtitleEl.textContent = "";
+  }
   
   // Update wrong button text based on remaining tries
   const wrongBtn = document.getElementById('btn-vote-word-wrong');
@@ -760,7 +773,9 @@ document.getElementById('btn-vote-word-wrong').addEventListener('click', () => {
   if (state.triesLeft > 0) {
     state.triesLeft--;
     if (state.triesLeft > 0) {
-      showScreen('mainPlay');
+      // Start another round of Pass the Phone starting with the player right after the Shepherd
+      state.passIndex = 1;
+      showHandToScreen();
     } else {
       // 0 tries left, force transition to finding wolves
       initVoteWolves();
@@ -769,7 +784,11 @@ document.getElementById('btn-vote-word-wrong').addEventListener('click', () => {
 });
 
 document.getElementById('btn-vote-word-cancel').addEventListener('click', () => {
-  showScreen('mainPlay');
+  if (state.selectedGame === 'MODE_GROUP_GUESSERS') {
+    showScreen('mainPlay');
+  } else {
+    showHandBackShepherdScreen();
+  }
 });
 
 function initVoteWolves() {
@@ -802,8 +821,7 @@ function updateVoteWolvesUI() {
 }
 
 document.getElementById('btn-vote-wolves-plus').addEventListener('click', () => {
-  const maxAccuse = state.rolesConfig.WOLF + (state.rolesConfig.SECRET_SHEEPDOG || 0);
-  if (state.wolvesFoundInput < maxAccuse) {
+  if (state.wolvesFoundInput < state.rolesConfig.WOLF) {
     state.wolvesFoundInput++;
     updateVoteWolvesUI();
   }

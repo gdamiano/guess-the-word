@@ -45,47 +45,49 @@ const STRINGS = {
       setup_roles_title: "SET UP 2/3: ROLES",
       setup_topics_title: "SET UP 3/3: TOPICS",
       how_to_play_desc: "The Shepherd knows the secret word.\nEach player asks the Shepherd one yes/no question.\nWhen everyone has a turn, vote on what the word could be!\nWolves secretly try to mislead the flock. After the round, guess who played the wolves!",
-      main_screen_title: "Time to Vote!",
+      main_screen_title: "Let's Play!",
       main_screen_desc: "You know the secret word. Each player may ask one question.\n\nWhen everyone had a turn, you can start the voting step.",
       vote_word_title: "GUESS THE WORD",
-      vote_word_desc: "The players decide on one word to guess. The Sheepdog should help them finalize their guess.",
+      vote_word_desc: "Tell the players they can discuss and choose one word for their guess. The Sheepdog has final say on the word.\n\nIf their guess is WRONG, they'll ask more questions.",
+      vote_word_tries_left: "The team has # tries left.",
+      vote_word_last_try: "This is the last try! If they choose wrong, the Wolves win.",
       vote_wolves_title: "FIND THE WOLVES",
       vote_wolves_desc: "Accuse # players of being wolves. The Sheepdog should help them finalize their guess.",
       roles: {
         SHEPHERD: {
           id: "SHEPHERD",
           name: "Shepherd",
-          desc: "knows the secret word and answers questions.",
+          desc: "Tell everyone: you're The Shepherd!\n\nYou can answer YES OR NO questions about the secret word.\n\nThe secret word is: ",
           instruction: "You know the answer!\nAnswer: "
         },
         FLOCK: {
           id: "FLOCK",
-          name: "Flock",
-          desc: "asks questions to guess the word.",
+          name: "Sheep",
+          desc: "Don't tell anyone: you're a sheep.\n\nYou may ask the Shepherd one yes/no question ABOUT the secret word.\n\nDon't guess yet or ask 'is the word ___?' You'll do that when everyone has a turn.",
           instruction: "You're on the team.\nAnswer: Unknown"
         },
         WOLF: {
           id: "WOLF",
           name: "Wolf",
-          desc: "knows the secret word and wants to mislead.",
+          desc: "Don't tell anyone: you're a wolf.\n\nYou may ask the Shepherd one yes/no question ABOUT the secret word.\n\nTrick the sheep team so they do not guess this word: ",
           instruction: "You're a wolf.\nAnswer: "
         },
         SHEEPDOG: {
           id: "SHEEPDOG",
           name: "Sheepdog",
-          desc: "confirms the Flock's final votes.",
-          instruction: "You're the main Sheepdog! Ask a question to help learn the secret answer, and help vote for the answer and the wolf at the end of the round.\nAnswer: Unknown"
+          desc: "Tell everyone: you're the main Sheepdog!\n\nYou may ask the Shepherd one yes/no question ABOUT the secret word.\n\nDon't guess yet or ask 'is the word ___?' You'll run guesses and votes later in the round.",
+          instruction: "Helps the team and runs votes."
         },
         SECRET_SHEEPDOG: {
           id: "SECRET_SHEEPDOG",
           name: "Secret Sheepdog",
-          desc: "votes on wolves but is unknown.",
-          instruction: "You're on the team.\nAnswer: Unknown"
+          desc: "Don't tell anyone: you're a secret sheepdog!\n\nYou may ask the Shepherd one yes/no question ABOUT the secret word.\n\nDon't guess yet or ask 'is the word ___?'",
+          instruction: "Gets one extra guess as to who's a wolf."
         }
       },
       SCORING: {
         MODE_ONE_EXPERT_WORD_CORRECT: 10,
-        MODE_ONE_EXPERT_WORD_FAILED: 45,
+        MODE_ONE_EXPERT_WORD_FAILED: 15,
         MODE_ONE_EXPERT_WOLF_FOUND: 15
       }
     },
@@ -152,11 +154,11 @@ const PORTRAIT_CONFIG = {
 
 const HOW_TO_PLAY_CONFIG = {
   MODE_ONE_EXPERT: [
-    { text: "The Shepherd knows the secret word.", image: "portrait_shepherd_neutral.png", fallback: "portrait_shepherd_neutral.png" },
-    { text: "Each player asks the Shepherd one yes/no question.", image: "portrait_sheep_neutral.png", fallback: "portrait_sheep_neutral.png" },
-    { text: "When everyone has a turn, vote on what the word could be!", image: "portrait_sheep_happy.png", fallback: "portrait_sheep_neutral.png" },
-    { text: "Wolves secretly try to mislead the flock.", image: "portrait_wolf_happy.png", fallback: "portrait_wolf_neutral.png" },
-    { text: "After the round, guess who played the wolves!", image: "portrait_sheepdog_happy.png", fallback: "portrait_sheep_neutral.png" }
+    { text: "The Sheep team wants to guess the secret word.", image: "portrait_sheep_neutral.png", fallback: "portrait_sheep_neutral.png" },
+    { text: "The Shepherd knows the secret word, and will answer yes/no quesitions.", image: "portrait_shepherd_neutral.png", fallback: "portrait_shepherd_neutral.png" },
+    { text: "Pass the phone around to give each player their instructions.", image: "pass_the_phone_small.png", fallback: "pass_phone_small.png" },
+    { text: "Wolves know the word and secretly MISLEAD the flock.", image: "portrait_wolf_happy.png", fallback: "portrait_wolf_neutral.png" },
+    { text: "After everyone asks a question, the team guesses the word, and the identity of the wolves!", image: "portrait_sheepdog_happy.png", fallback: "portrait_sheep_neutral.png" }
   ],
   MODE_GROUP_GUESSERS: [
     { text: "Sheep and Sheepdogs know the secret word. On their turn player says one word related to the secret word.", image: "portrait_sheep_neutral.png", fallback: "portrait_sheep_neutral.png" },
