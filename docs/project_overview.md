@@ -119,6 +119,9 @@ A standardized workflow governs how media assets are structured, scaled, and man
 
 ### Phase 4: Polish fixes
 * [x] Review and clean up user-facing text after 5/11 play
+* [ ] Add sheepdog note in Ask the shepherd
+* [ ] Decouple character notes in setup page, so I can write Group Guesser hints
+* [ ] Rethink categories
 * [ ] Add a dark horizon floor to the background
 * [ ] Original Settings button icon
 * [ ] Review and clean up user-facing text after MI house first play

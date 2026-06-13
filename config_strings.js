@@ -64,31 +64,36 @@ const STRINGS = {
           id: "SHEPHERD",
           name: "Shepherd",
           desc: "Tell everyone: you're The Shepherd!\n\nYou can answer YES OR NO questions about the secret word.\n\nThe secret word is: ",
-          instruction: "You know the answer!\nAnswer: "
+          instruction: "You know the answer!\nAnswer: ",
+          setupDesc: "Answer questions about the secret word."
         },
         FLOCK: {
           id: "FLOCK",
           name: "Sheep",
 		  desc: "You're a regular sheep.\n• Don't tell anyone.\n• Ask one yes/no question ABOUT the secret word.\n• Don't guess the word yet.",
-          instruction: "You're on the team.\nAnswer: Unknown"
+          instruction: "You're on the team.\nAnswer: Unknown",
+          setupDesc: "Ask questions, find the wolves."
         },
         WOLF: {
           id: "WOLF",
           name: "Wolf",
           desc: "You're a hidden wolf.\n• Don't tell anyone.\n• Ask one yes/no question ABOUT the secret word.\n• The secret word is: ",
-          instruction: "You're a wolf.\nAnswer: "
+          instruction: "You're a wolf.\nAnswer: ",
+          setupDesc: "Fool the team into guessing the wrong word."
         },
         SHEEPDOG: {
           id: "SHEEPDOG",
           name: "Sheepdog",
 		  desc: "You're the main Sheepdog!\n• Tell everyone you're the Sheepdog.\n• Ask one yes/no question ABOUT the secret word.\n• Don't guess the word yet.",
-          instruction: "Helps the team and runs votes."
+          instruction: "Helps the team and runs votes.",
+          setupDesc: "Ask questions, guess the word, run the votes."
         },
         SECRET_SHEEPDOG: {
           id: "SECRET_SHEEPDOG",
           name: "Secret Sheepdog",
 		  desc: "You're a SECRET Sheepdog.\n• Don't tell anyone.\n• Say one word RELATED TO the secret word.\n• The secret word is: ",
-          instruction: "Gets one extra guess as to who's a wolf."
+          instruction: "Gets one extra guess as to who's a wolf.",
+          setupDesc: "Adds an extra vote about Wolves."
         }
       },
       SCORING: {
@@ -115,25 +120,29 @@ const STRINGS = {
           id: "SHEEPDOG",
           name: "Sheepdog",
           desc: "You're the main Sheepdog!\n• Tell everyone you're the Sheepdog.\n• Say one word RELATED TO the secret word.\n• The secret word is: ",
-          instruction: "You know the answer! Start the round by saying a word related to:\nAnswer: "
+          instruction: "You know the answer! Start the round by saying a word related to:\nAnswer: ",
+          setupDesc: "Lead the Flock and start the round."
         },
         FLOCK: {
           id: "FLOCK",
           name: "Sheep",
           desc: "You're a regular sheep.\n• Don't tell anyone.\n• Say one word RELATED TO the secret word.\n• The secret word is: ",
-          instruction: "You know the answer! When it's your turn, say a word related to:\nAnswer: "
+          instruction: "You know the answer! When it's your turn, say a word related to:\nAnswer: ",
+          setupDesc: "Describe the word to find the Wolves."
         },
         WOLF: {
           id: "WOLF",
           name: "Wolf",
           desc: "You're a hidden wolf.\n• Don't tell anyone.\n• Say one word that SOUNDS LIKE the other players' words.\n• Try to blend in: fake it!",
-          instruction: "You're the wolf. You DON'T know the word! Listen to others and say a word that fits in.\nAnswer: Unknown"
+          instruction: "You're the wolf. You DON'T know the word! Listen to others and say a word that fits in.\nAnswer: Unknown",
+          setupDesc: "Blend in, then guess the secret word."
         },
         SECRET_SHEEPDOG: {
           id: "SECRET_SHEEPDOG",
           name: "Secret Sheepdog",
           desc: "You're a SECRET Sheepdog.\n• Don't tell anyone.\n• Say one word RELATED TO the secret word.\n• The secret word is: ",
-          instruction: "Gets one extra guess as to who's a wolf."
+          instruction: "Gets one extra guess as to who's a wolf.",
+          setupDesc: "Describe the word and assist in voting."
         }
       },
       SCORING: {

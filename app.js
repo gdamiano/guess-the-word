@@ -395,6 +395,19 @@ function updateRoleDisplays() {
 }
 
 function initSetupRoles() {
+  const modeData = STRINGS.MODES[state.selectedGame];
+  
+  // Decouple role descriptions dynamically from the current game mode config strings
+  const shepherdDesc = document.querySelector('#setup-row-shepherd .role-desc');
+  const wolfDesc = document.querySelector('#setup-row-wolf .role-desc');
+  const sheepdogDesc = document.querySelector('#setup-row-sheepdog .role-desc');
+  const secretSheepdogDesc = document.querySelector('#setup-row-secret-sheepdog .role-desc');
+
+  if (shepherdDesc) shepherdDesc.textContent = modeData.roles.SHEPHERD ? (modeData.roles.SHEPHERD.setupDesc || "") : "";
+  if (wolfDesc) wolfDesc.textContent = modeData.roles.WOLF ? (modeData.roles.WOLF.setupDesc || "") : "";
+  if (sheepdogDesc) sheepdogDesc.textContent = modeData.roles.SHEEPDOG ? (modeData.roles.SHEEPDOG.setupDesc || "") : "";
+  if (secretSheepdogDesc) secretSheepdogDesc.textContent = modeData.roles.SECRET_SHEEPDOG ? (modeData.roles.SECRET_SHEEPDOG.setupDesc || "") : "";
+
   if (state.selectedGame === 'MODE_GROUP_GUESSERS') {
     document.getElementById('setup-row-shepherd').style.display = 'none';
     document.getElementById('setup-row-secret-sheepdog').style.display = 'flex';
@@ -923,6 +936,17 @@ document.getElementById('btn-vote-wolves-continue').addEventListener('click', ()
 function initVoteWolvesGroup() {
   const wolfCount = state.rolesConfig.WOLF;
   document.getElementById('vote-wolves-group-desc').textContent = `Decide as a group on ${wolfCount} ${wolfCount === 1 ? 'player who is a wolf' : 'players who are wolves'}. The Sheepdog calls for the final vote.`;
+
+  // Add Secret Sheepdogs warning string dynamically if present for Follow the Flock
+  const secSheepdogs = state.rolesConfig.SECRET_SHEEPDOG || 0;
+  const wolvesInfoEl = document.getElementById('vote-wolves-group-secret-sheepdogs-info');
+  if (secSheepdogs >= 1) {
+    const totalAccuse = state.rolesConfig.WOLF + secSheepdogs;
+    wolvesInfoEl.textContent = `There are ${secSheepdogs} Secret Sheepdog${secSheepdogs === 1 ? '' : 's'} in the team! You may accuse and test a total of ${totalAccuse} players of being wolves.`;
+    wolvesInfoEl.style.display = 'block';
+  } else {
+    wolvesInfoEl.style.display = 'none';
+  }
 
   state.wolvesFoundInput = 0; // Reset to 0, centered
   updateVoteWolvesGroupUI();
