@@ -75,6 +75,19 @@
         <section id="screen-setup-roles" class="screen hidden">
           <h2 id="setup-roles-title" class="screen-title">SET UP 2/3: ROLES</h2>
           <div id="roles-config-list" style="overflow-y: auto; flex-grow: 1; min-height: 0; padding-right: 4px;">
+            <!-- Sheep (Common Flock - Dynamic calculation) -->
+            <div class="setup-row role-row" id="setup-row-sheep">
+              <img class="role-row-img" src="assets/portrait_sheep_happy.png?v=2" onerror="this.onerror=null; this.src='assets/portrait_sheep_neutral.png?v=2';" alt="Sheep">
+              <div class="role-row-info">
+                <span class="setup-label">Sheep</span>
+                <p class="role-desc">Ask questions, find the wolves.</p>
+              </div>
+              <div class="setup-controls">
+                <button class="btn-icon" style="visibility: hidden; pointer-events: none;">−</button>
+                <span id="sheep-count-display" style="font-weight: bold; font-size: 1.2rem; min-width: 1.5rem; text-align: center; display: inline-block;">1</span>
+                <button class="btn-icon" style="visibility: hidden; pointer-events: none;">+</button>
+              </div>
+            </div>
             <!-- Shepherd (Fixed to 1) -->
             <div class="setup-row role-row" id="setup-row-shepherd">
               <img class="role-row-img" src="assets/portrait_shepherd_neutral.png?v=2" alt="Shepherd">

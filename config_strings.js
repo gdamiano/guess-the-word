@@ -121,32 +121,32 @@ const STRINGS = {
           name: "Sheepdog",
           desc: "You're the main Sheepdog!\n• Tell everyone you're the Sheepdog.\n• Say one word RELATED TO the secret word.\n• The secret word is: ",
           instruction: "You know the answer! Start the round by saying a word related to:\nAnswer: ",
-          setupDesc: "Lead the Flock and start the round."
+          setupDesc: "Help the Sheep guess and vote."
         },
         FLOCK: {
           id: "FLOCK",
           name: "Sheep",
           desc: "You're a regular sheep.\n• Don't tell anyone.\n• Say one word RELATED TO the secret word.\n• The secret word is: ",
           instruction: "You know the answer! When it's your turn, say a word related to:\nAnswer: ",
-          setupDesc: "Describe the word to find the Wolves."
+          setupDesc: "Give clues about the word, but fool the wolves!"
         },
         WOLF: {
           id: "WOLF",
           name: "Wolf",
           desc: "You're a hidden wolf.\n• Don't tell anyone.\n• Say one word that SOUNDS LIKE the other players' words.\n• Try to blend in: fake it!",
           instruction: "You're the wolf. You DON'T know the word! Listen to others and say a word that fits in.\nAnswer: Unknown",
-          setupDesc: "Blend in, then guess the secret word."
+          setupDesc: "Blend in by saying a word that fits, then guess the secret word."
         },
         SECRET_SHEEPDOG: {
           id: "SECRET_SHEEPDOG",
           name: "Secret Sheepdog",
           desc: "You're a SECRET Sheepdog.\n• Don't tell anyone.\n• Say one word RELATED TO the secret word.\n• The secret word is: ",
           instruction: "Gets one extra guess as to who's a wolf.",
-          setupDesc: "Describe the word and assist in voting."
+          setupDesc: "Helps the team, adds one extra guess about wolves."
         }
       },
       SCORING: {
-        MODE_GROUP_GUESSERS_WOLF_WRONG: 15,
+        MODE_GROUP_GUESSERS_WOLF_WRONG: 20,
         MODE_GROUP_GUESSERS_WOLF_FOUND: 10,
         MODE_GROUP_GUESSERS_SHEEPDOG_EXTRA: 5
       }

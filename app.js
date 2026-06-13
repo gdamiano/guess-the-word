@@ -389,6 +389,10 @@ document.getElementById('btn-setup-players-next').addEventListener('click', () =
 // 3. SETUP ROLES
 // ==========================================
 function updateRoleDisplays() {
+  const sheepCount = state.playerCount - (state.rolesConfig.SHEPHERD || 0) - (state.rolesConfig.WOLF || 0) - (state.rolesConfig.SHEEPDOG || 0) - (state.rolesConfig.SECRET_SHEEPDOG || 0);
+  const sheepDisplay = document.getElementById('sheep-count-display');
+  if (sheepDisplay) sheepDisplay.textContent = Math.max(0, sheepCount);
+
   document.getElementById('wolf-count-display').textContent = state.rolesConfig.WOLF;
   document.getElementById('sheepdog-count-display').textContent = state.rolesConfig.SHEEPDOG;
   document.getElementById('secretsheepdog-count-display').textContent = state.rolesConfig.SECRET_SHEEPDOG;
@@ -398,11 +402,13 @@ function initSetupRoles() {
   const modeData = STRINGS.MODES[state.selectedGame];
   
   // Decouple role descriptions dynamically from the current game mode config strings
+  const sheepDesc = document.querySelector('#setup-row-sheep .role-desc');
   const shepherdDesc = document.querySelector('#setup-row-shepherd .role-desc');
   const wolfDesc = document.querySelector('#setup-row-wolf .role-desc');
   const sheepdogDesc = document.querySelector('#setup-row-sheepdog .role-desc');
   const secretSheepdogDesc = document.querySelector('#setup-row-secret-sheepdog .role-desc');
 
+  if (sheepDesc) sheepDesc.textContent = modeData.roles.FLOCK ? (modeData.roles.FLOCK.setupDesc || "") : "";
   if (shepherdDesc) shepherdDesc.textContent = modeData.roles.SHEPHERD ? (modeData.roles.SHEPHERD.setupDesc || "") : "";
   if (wolfDesc) wolfDesc.textContent = modeData.roles.WOLF ? (modeData.roles.WOLF.setupDesc || "") : "";
   if (sheepdogDesc) sheepdogDesc.textContent = modeData.roles.SHEEPDOG ? (modeData.roles.SHEEPDOG.setupDesc || "") : "";
