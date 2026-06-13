@@ -687,7 +687,7 @@ function initPlanningScreen() {
 }
 
 // Hold to reveal logic
-function setupSecretWordBox(boxId, revealId, holdId, buttonId, originalText) {
+function setupSecretWordBox(boxId, revealId, holdId, buttonId, originalText, holdTimeMs) {
   const box = document.getElementById(boxId);
   const reveal = document.getElementById(revealId);
   const hold = document.getElementById(holdId);
@@ -702,6 +702,7 @@ function setupSecretWordBox(boxId, revealId, holdId, buttonId, originalText) {
     btn.disabled = true;
     btn.classList.add('btn-filling');
     btn.classList.remove('active-fill');
+    btn.style.removeProperty('transition');
     btn.textContent = "view your secret above";
   };
 
@@ -711,14 +712,17 @@ function setupSecretWordBox(boxId, revealId, holdId, buttonId, originalText) {
     reveal.classList.remove('hidden');
     
     if (!hasUnlocked) {
+      // Set transition duration dynamically in inline styles with !important to match holdTimeMs
+      btn.style.setProperty('transition', `background-position ${holdTimeMs / 1000}s linear`, 'important');
       btn.classList.add('active-fill');
       if (holdTimer) clearTimeout(holdTimer);
       holdTimer = setTimeout(() => {
         hasUnlocked = true;
         btn.classList.remove('btn-filling', 'active-fill');
+        btn.style.removeProperty('transition');
         btn.disabled = false;
         btn.textContent = originalText;
-      }, 2000);
+      }, holdTimeMs);
     }
   };
   
@@ -728,6 +732,8 @@ function setupSecretWordBox(boxId, revealId, holdId, buttonId, originalText) {
     reveal.classList.add('hidden');
     
     if (!hasUnlocked) {
+      // Reset transition instantly to 0% fill
+      btn.style.setProperty('transition', 'none', 'important');
       btn.classList.remove('active-fill');
       if (holdTimer) clearTimeout(holdTimer);
     }
@@ -740,8 +746,8 @@ function setupSecretWordBox(boxId, revealId, holdId, buttonId, originalText) {
   box.addEventListener('mouseleave', hide);
 }
 
-setupSecretWordBox('secret-word-box', 'secret-word-reveal-content', 'secret-word-hold-content', 'btn-planning-next', 'PRESS & PASS THE PHONE');
-setupSecretWordBox('main-secret-word-box', 'main-secret-word-reveal-content', 'main-secret-word-hold-content', 'btn-main-play-vote', "Let's Vote");
+setupSecretWordBox('secret-word-box', 'secret-word-reveal-content', 'secret-word-hold-content', 'btn-planning-next', 'PRESS & PASS THE PHONE', 1000);
+setupSecretWordBox('main-secret-word-box', 'main-secret-word-reveal-content', 'main-secret-word-hold-content', 'btn-main-play-vote', "Let's Vote", 2000);
 
 document.getElementById('btn-planning-next').addEventListener('click', () => {
   state.passIndex++;
