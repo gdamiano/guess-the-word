@@ -128,7 +128,7 @@ const STRINGS = {
           name: "Sheep",
           desc: "You're a regular sheep.\n• Don't tell anyone.\n• Say one word RELATED TO the secret word.\n• The secret word is: ",
           instruction: "You know the answer! When it's your turn, say a word related to:\nAnswer: ",
-          setupDesc: "Give clues about the word, but fool the wolves!"
+          setupDesc: "Give word clues, but fool the wolves!"
         },
         WOLF: {
           id: "WOLF",
