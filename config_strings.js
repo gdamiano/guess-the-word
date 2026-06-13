@@ -65,14 +65,14 @@ const STRINGS = {
           name: "Shepherd",
           desc: "Tell everyone: you're The Shepherd!\n\nYou can answer YES OR NO questions about the secret word.\n\nThe secret word is: ",
           instruction: "You know the answer!\nAnswer: ",
-          setupDesc: "Answer questions about the secret word."
+          setupDesc: "Answer questions about the secret."
         },
         FLOCK: {
           id: "FLOCK",
           name: "Sheep",
 		  desc: "You're a regular sheep.\n• Don't tell anyone.\n• Ask one yes/no question ABOUT the secret word.\n• Don't guess the word yet.",
           instruction: "You're on the team.\nAnswer: Unknown",
-          setupDesc: "Discover the secret word by asking yes/no questions."
+          setupDesc: "Discover the secret word."
         },
         WOLF: {
           id: "WOLF",
