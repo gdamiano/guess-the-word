@@ -72,7 +72,7 @@ const STRINGS = {
           name: "Sheep",
 		  desc: "You're a regular sheep.\n• Don't tell anyone.\n• Ask one yes/no question ABOUT the secret word.\n• Don't guess the word yet.",
           instruction: "You're on the team.\nAnswer: Unknown",
-          setupDesc: "Ask questions, find the wolves."
+          setupDesc: "Discover the secret word by asking yes/no questions."
         },
         WOLF: {
           id: "WOLF",
