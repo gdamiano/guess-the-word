@@ -26,6 +26,12 @@ const STRINGS = {
 <h4>Fool the Flock</h4>
 <p>All players except the Wolves know the secret word. Players take turns saying a single word related to the secret word. The Wolves must bluff and fit in without knowing the word, then guess the word if they are voted out.</p>
 
+<h4>Copyright Notice</h4>
+<p>© 2026 Gregory Damiano. All rights reserved.</p>
+
+<h4>Intellectual Property Disclaimer</h4>
+<p>The content, design, graphics, and structure of this application are the exclusive property of Gregory Damiano and are protected by applicable intellectual property laws. Unauthorized reproduction, distribution, or modification of any material, including but not limited to the application’s imagery, UI elements, and unique written content, is strictly prohibited without express written permission.</p>
+
 <h4>AI Disclosures</h4>
 <p>No AI-generated art or layouts were used in this app. Generative AI was used to write the code and perform developer documentation and operations. Steps were taken to avoid the theft of human artistic works.</p>
 
