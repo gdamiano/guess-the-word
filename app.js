@@ -52,6 +52,8 @@ const appHeaderTitle = document.getElementById('app-header-title');
 const btnAppSettings = document.getElementById('btn-app-settings');
 const settingsMenu = document.getElementById('settings-menu');
 
+let currentScreen = 'home';
+
 // --- ROUTING ---
 function showScreen(screenKey) {
   Object.keys(screens).forEach(key => {
@@ -65,6 +67,11 @@ function showScreen(screenKey) {
   // Always hide settings menu when navigating
   if (settingsMenu) {
     settingsMenu.classList.add('hidden');
+  }
+
+  // Record current non-about screen for returning later
+  if (screenKey !== 'about') {
+    currentScreen = screenKey;
   }
 
   // Manage header visibility
@@ -159,6 +166,14 @@ document.addEventListener('click', (e) => {
   }
 });
 
+// About option
+document.getElementById('btn-settings-about').addEventListener('click', () => {
+  settingsMenu.classList.add('hidden');
+  document.getElementById('about-screen-title').textContent = STRINGS.ABOUT_TITLE || "About";
+  document.getElementById('about-content').innerHTML = STRINGS.ABOUT_TEXT || "";
+  showScreen('about');
+});
+
 // End Game option
 document.getElementById('btn-settings-end-game').addEventListener('click', () => {
   if (confirm("Are you sure you want to quit the current game?")) {
@@ -192,7 +207,7 @@ document.getElementById('btn-home-about').addEventListener('click', () => {
 });
 
 document.getElementById('btn-about-close').addEventListener('click', () => {
-  showScreen('home');
+  showScreen(currentScreen);
 });
 
 // ==========================================
