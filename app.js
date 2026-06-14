@@ -104,7 +104,7 @@ function initApp() {
   document.getElementById('btn-home-start').textContent = STRINGS.BTN_START_GAME;
   document.getElementById('btn-home-about').textContent = STRINGS.BTN_ABOUT || "About";
   
-  selectMode('MODE_ONE_EXPERT');
+  selectMode('MODE_GROUP_GUESSERS');
   showScreen('home');
   
   // Setup drag-and-drop on the player inputs list
