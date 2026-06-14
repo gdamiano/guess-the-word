@@ -27,15 +27,36 @@
         <!-- SCREEN 1: Home / Game Selection -->
         <section id="screen-home" class="screen">
           <h2 id="home-title" class="screen-title">CHOOSE A GAME</h2>
-          <div class="game-options">
-            <button class="btn-mode-select active" id="btn-mode-expert">
-              <span id="label-mode-expert">Ask the Shepherd</span>
-              <span class="btn-mode-subtitle">5+ players</span>
-            </button>
-            <button class="btn-mode-select" id="btn-mode-group">
-              <span id="label-mode-group">Follow the Flock</span>
-              <span class="btn-mode-subtitle">4+ players</span>
-            </button>
+          <!-- Custom Game Selector Dropdown -->
+          <div class="custom-dropdown-container">
+            <div id="dropdown-trigger" class="dropdown-trigger">
+              <img id="dropdown-trigger-icon" class="dropdown-icon-img" src="assets/portrait_shepherd_neutral.png?v=2" alt="Game Icon">
+              <span id="dropdown-trigger-text" class="dropdown-trigger-text">Ask the Shepherd</span>
+              <span class="dropdown-arrow">▼</span>
+            </div>
+            
+            <div id="dropdown-options-list" class="dropdown-options-list hidden">
+              <div class="dropdown-option-item" data-mode="MODE_ONE_EXPERT">
+                <img class="dropdown-icon-img" src="assets/portrait_shepherd_neutral.png?v=2" alt="Ask the Shepherd">
+                <span class="dropdown-option-title">Ask the Shepherd</span>
+                <span class="dropdown-option-limit">
+                  4+ 
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="#3b82f6" style="vertical-align: middle; margin-left: 2px;">
+                    <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                  </svg>
+                </span>
+              </div>
+              <div class="dropdown-option-item" data-mode="MODE_GROUP_GUESSERS">
+                <img class="dropdown-icon-img" src="assets/portrait_sheep_neutral.png?v=2" alt="Fool the Flock">
+                <span class="dropdown-option-title">Fool the Flock</span>
+                <span class="dropdown-option-limit">
+                  5+ 
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="#3b82f6" style="vertical-align: middle; margin-left: 2px;">
+                    <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                  </svg>
+                </span>
+              </div>
+            </div>
           </div>
           <p id="mode-description" class="mode-description"></p>
           <div class="flex-spacer"></div>

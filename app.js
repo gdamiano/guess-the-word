@@ -101,8 +101,6 @@ function showScreen(screenKey) {
 // --- INITIALIZATION ---
 function initApp() {
   appHeaderTitle.textContent = STRINGS.HEADER_CHOOSE_GAME;
-  document.getElementById('label-mode-expert').textContent = STRINGS.MODES.MODE_ONE_EXPERT.title;
-  document.getElementById('label-mode-group').textContent = STRINGS.MODES.MODE_GROUP_GUESSERS.title;
   document.getElementById('btn-home-start').textContent = STRINGS.BTN_START_GAME;
   document.getElementById('btn-home-about').textContent = STRINGS.BTN_ABOUT || "About";
   
@@ -120,26 +118,30 @@ function selectMode(modeId) {
   state.selectedGame = modeId;
   const modeData = STRINGS.MODES[modeId];
   
-  document.getElementById('mode-description').textContent = modeData.description;
+  const descEl = document.getElementById('mode-description');
+  if (descEl) descEl.innerHTML = modeData.description;
+  
+  const triggerIcon = document.getElementById('dropdown-trigger-icon');
+  const triggerText = document.getElementById('dropdown-trigger-text');
+  if (triggerText) triggerText.textContent = modeData.title;
+  if (triggerIcon) {
+    triggerIcon.src = modeId === 'MODE_ONE_EXPERT' 
+      ? 'assets/portrait_shepherd_neutral.png?v=2' 
+      : 'assets/portrait_sheep_neutral.png?v=2';
+  }
   
   const previewImg = document.getElementById('home-mode-preview');
   if (modeId === 'MODE_ONE_EXPERT') {
-    document.getElementById('btn-mode-expert').classList.add('active');
-    document.getElementById('btn-mode-group').classList.remove('active');
     if (previewImg) {
       previewImg.src = 'assets/mode_ask_the_expert.png?v=2';
       previewImg.style.display = 'block';
     }
   } else if (modeId === 'MODE_GROUP_GUESSERS') {
-    document.getElementById('btn-mode-group').classList.add('active');
-    document.getElementById('btn-mode-expert').classList.remove('active');
     if (previewImg) {
       previewImg.src = 'assets/mode_group_guessing.png?v=2';
       previewImg.style.display = 'block';
     }
   } else {
-    document.getElementById('btn-mode-group').classList.remove('active');
-    document.getElementById('btn-mode-expert').classList.remove('active');
     if (previewImg) {
       previewImg.style.display = 'none';
     }
@@ -150,8 +152,38 @@ function selectMode(modeId) {
   appFrame.className = 'app-frame';
 }
 
-document.getElementById('btn-mode-expert').addEventListener('click', () => selectMode('MODE_ONE_EXPERT'));
-document.getElementById('btn-mode-group').addEventListener('click', () => selectMode('MODE_GROUP_GUESSERS'));
+// Dropdown toggle and selection event listeners
+const dropdownContainer = document.querySelector('.custom-dropdown-container');
+const dropdownTrigger = document.getElementById('dropdown-trigger');
+const dropdownOptionsList = document.getElementById('dropdown-options-list');
+
+if (dropdownTrigger && dropdownOptionsList) {
+  dropdownTrigger.addEventListener('click', (e) => {
+    e.stopPropagation();
+    dropdownContainer.classList.toggle('open');
+    dropdownOptionsList.classList.toggle('hidden');
+  });
+
+  // Handle option selection
+  const optionItems = document.querySelectorAll('.dropdown-option-item');
+  optionItems.forEach(item => {
+    item.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const selectedMode = item.dataset.mode;
+      selectMode(selectedMode);
+      dropdownContainer.classList.remove('open');
+      dropdownOptionsList.classList.add('hidden');
+    });
+  });
+
+  // Close dropdown when clicking outside
+  document.addEventListener('click', (e) => {
+    if (dropdownContainer && !dropdownContainer.contains(e.target)) {
+      dropdownContainer.classList.remove('open');
+      dropdownOptionsList.classList.add('hidden');
+    }
+  });
+}
 
 // Settings menu toggle
 btnAppSettings.addEventListener('click', (e) => {

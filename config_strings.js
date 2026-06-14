@@ -45,7 +45,7 @@ const STRINGS = {
     MODE_ONE_EXPERT: {
       id: "MODE_ONE_EXPERT",
       title: "Ask the Shepherd",
-      description: "The Shepherd knows the secret words. The players can ask questions. Some players are Secret Wolves, trying to make the team decide on the wrong word.",
+      description: "<strong>The Shepherd</strong> knows the secret words. The players can ask questions. Some players are <strong>Secret Wolves</strong>, trying to make the team decide on the wrong word.",
       themeClass: "theme-blue",
       setup_players_title: "SET UP 1/3: PLAYERS",
       setup_roles_title: "SET UP 2/3: ROLES",
