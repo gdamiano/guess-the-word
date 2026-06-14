@@ -1,4 +1,7 @@
 const wordCategories = {
+  "Aspirational Pets": [
+    "Fox", "Elephant", "Hedgehog", "Tarantula", "Gecko", "Giraffe", "Miniature Pig", "Hermit Crab", "Miniature Goat", "Hummingbird", "Falcon", "Iguana", "Capybara", "Duck", "Chicken", "Toucan", "Jellyfish", "Tiger Shark", "Macaw (Parrot)", "Penguin"
+  ],
   "Old Things": [
     "Pocket Watch", "Model T Food", "Washboard", "Rotary Telephone", "Fountain Pen", "Ice Box", "Horse and Carriage", "Typewriter", "Floppy Disk", "VHS Tape", "Pager (or Beeper)", "Tamagotchi Pet", "Game Boy", "Dial-Up Modem", "Boombox", "Polaroid Camera", "Slap Bracelet", "Discman Player", "Slinky Toy", "Furby Robot"
   ],
@@ -31,10 +34,10 @@ const wordCategories = {
   "Items You'd Steal From DAISO": [
     "Tape", "Gel pens", "Sticky notes", "Mechanical pencils", "Erasers", "Index cards", "Gift bags", "Paper clips", "Magnets", "Keychains", "Hair clips", "Lint rollers", "Stuffed animals", "Chopsticks", "Snack bags", "Storage bins", "Clothes hangers", "Socks", "Towels", "Toothbrush holders", "Cleaning wipes", "Faux plants", "Picture frames", "Mochi snacks", "Tea packets"
   ],
+  "Long-Lost Crayon Colors": [
+    "Macaroni and Cheese", "Outer Space", "Salmon", "Lemon Yellow", "Granny Smith Apple", "Kryptonite", "Jelly Bean", "Grand Canyon", "Pacific Ocean", "Twinkle Twinkle Little Star", "Soap", "Jalepeño", "Milky Way", "Bubble Bath", "Famous", "Very Hungry Catepillar", "Ladybug", "Yellow Brick Road", "Neutral", "Black Hole", "Cotton Candy"
+  ],
   "Things I Can't Put On Cereal": [
     "Ketchup", "Mustard", "Mayonnaise", "Relish", "Hot sauce", "BBQ sauce", "Soy sauce", "Whipped cream", "Worcestershire sauce", "Sriracha", "Vinegar", "Olive oil", "Ranch dressing", "Caesar dressing", "Horseradish", "Hummus", "Salsa", "Guacamole", "Pesto", "Honey mustard", "Chili oil", "Fish sauce", "Wasabi", "Dijon mustard"
-  ],
-  "Weird Pet Animals": [
-    "Fox", "Axolotl", "Hedgehog", "Tarantula", "Gecko", "Beetle", "Miniature Pig", "Hermit Crab", "Miniature Goat", "Ferret", "Falcon", "Iguana", "Snake", "Duck", "Chicken", "Gerbil", "Guinea Pig", "Ocelot", "Macaw (Parrot)", "Pacman Frog", "Bat"
   ]
 };
