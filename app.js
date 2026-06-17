@@ -291,7 +291,7 @@ function renderPlayerInputs(forcedValues = null) {
     
     const row = document.createElement('div');
     row.className = 'player-input-row';
-    row.draggable = true;
+    row.draggable = false;
     row.dataset.index = i;
     
     const handle = document.createElement('span');
@@ -391,83 +391,205 @@ function makePlayerFirst(idx) {
 }
 
 function makeListDraggable(container) {
-  let dragEl = null;
-
-  // Mouse Drag
-  container.addEventListener('dragstart', (e) => {
-    const row = e.target.closest('.player-input-row');
-    if (row) {
-      dragEl = row;
-      row.classList.add('dragging');
+  let activeRow = null;
+  let placeholder = null;
+  let startY = 0;
+  let startTop = 0;
+  let isDragging = false;
+  let initialSiblings = [];
+  let N = 0;
+  let startIndex = -1;
+  let slotRects = [];
+  let shiftDistance = 0;
+  
+  const getClientY = (e) => {
+    if (e.touches && e.touches.length > 0) {
+      return e.touches[0].clientY;
     }
-  });
-
-  container.addEventListener('dragend', (e) => {
-    const row = e.target.closest('.player-input-row');
-    if (row) {
-      row.classList.remove('dragging');
+    if (e.changedTouches && e.changedTouches.length > 0) {
+      return e.changedTouches[0].clientY;
     }
-    dragEl = null;
-    renumberPlaceholders();
-  });
+    return e.clientY;
+  };
 
-  container.addEventListener('dragover', (e) => {
+  const onStart = (e, row) => {
+    if (!e.target.classList.contains('drag-handle')) return;
+    
+    // Prevent default actions to stop scrolling on mobile drag starts
     e.preventDefault();
-    if (!dragEl) return;
-    const afterElement = getDragAfterElement(container, e.clientY);
-    if (afterElement == null) {
-      container.appendChild(dragEl);
-    } else {
-      container.insertBefore(dragEl, afterElement);
-    }
-  });
+    
+    activeRow = row;
+    isDragging = false;
+    startY = getClientY(e);
+  };
 
-  // Touch Drag (Mobile)
-  let touchStartEl = null;
-  container.addEventListener('touchstart', (e) => {
-    if (e.target.classList.contains('drag-handle')) {
-      const row = e.target.closest('.player-input-row');
-      if (row) {
-        touchStartEl = row;
-        row.classList.add('dragging');
-        e.preventDefault();
+  const onMove = (e) => {
+    if (!activeRow) return;
+    
+    const currentY = getClientY(e);
+    const deltaY = currentY - startY;
+    
+    if (!isDragging && Math.abs(deltaY) > 5) {
+      isDragging = true;
+      
+      initialSiblings = Array.from(container.querySelectorAll('.player-input-row'));
+      N = initialSiblings.length;
+      if (N < 2) {
+        isDragging = false;
+        return;
+      }
+      startIndex = initialSiblings.indexOf(activeRow);
+      
+      const rects = initialSiblings.map(sib => sib.getBoundingClientRect());
+      const parentRect = container.getBoundingClientRect();
+      
+      startTop = rects[startIndex].top - parentRect.top + container.scrollTop;
+      
+      // Calculate row vertical shift distance dynamically including layout margin
+      if (activeRow.nextElementSibling) {
+        shiftDistance = activeRow.nextElementSibling.getBoundingClientRect().top - rects[startIndex].top;
+      } else if (activeRow.previousElementSibling) {
+        shiftDistance = rects[startIndex].top - activeRow.previousElementSibling.getBoundingClientRect().top;
+      } else {
+        shiftDistance = rects[startIndex].height + 12; // Fallback
+      }
+      
+      placeholder = document.createElement('div');
+      placeholder.className = 'player-input-row-placeholder';
+      placeholder.style.height = `${rects[startIndex].height}px`;
+      placeholder.style.marginBottom = window.getComputedStyle(activeRow).marginBottom;
+      
+      container.insertBefore(placeholder, activeRow);
+      
+      slotRects = rects;
+      
+      activeRow.classList.add('custom-dragging');
+      activeRow.style.width = `${rects[startIndex].width}px`;
+      activeRow.style.height = `${rects[startIndex].height}px`;
+      activeRow.style.left = `${rects[startIndex].left - parentRect.left + container.scrollLeft}px`;
+      activeRow.style.top = `${startTop}px`;
+      
+      container.classList.add('list-dragging');
+    }
+    
+    if (isDragging) {
+      e.preventDefault();
+      
+      const newTop = startTop + deltaY;
+      activeRow.style.top = `${newTop}px`;
+      
+      // Calculate which slot index the cursor is currently over
+      let hoverIndex = startIndex;
+      for (let k = 0; k < N; k++) {
+        const rect = slotRects[k];
+        const middleY = rect.top + rect.height / 2;
+        if (currentY < middleY) {
+          hoverIndex = k;
+          break;
+        }
+        if (k === N - 1) {
+          hoverIndex = N - 1;
+        }
+      }
+      
+      // Apply translate transforms to siblings to dynamically open the gap
+      for (let j = 0; j < N; j++) {
+        const sib = initialSiblings[j];
+        if (sib === activeRow) continue;
+        
+        if (hoverIndex === startIndex) {
+          sib.style.transform = '';
+        } else if (hoverIndex < startIndex) {
+          // Dragged upwards: shift rows in between downwards
+          if (j >= hoverIndex && j < startIndex) {
+            sib.style.transform = `translateY(${shiftDistance}px)`;
+          } else {
+            sib.style.transform = '';
+          }
+        } else {
+          // Dragged downwards: shift rows in between upwards
+          if (j > startIndex && j <= hoverIndex) {
+            sib.style.transform = `translateY(${-shiftDistance}px)`;
+          } else {
+            sib.style.transform = '';
+          }
+        }
       }
     }
-  }, { passive: false });
+  };
 
-  container.addEventListener('touchmove', (e) => {
-    if (!touchStartEl) return;
-    e.preventDefault();
-    const touch = e.touches[0];
-    const afterElement = getDragAfterElement(container, touch.clientY);
-    if (afterElement == null) {
-      container.appendChild(touchStartEl);
-    } else {
-      container.insertBefore(touchStartEl, afterElement);
-    }
-  }, { passive: false });
-
-  container.addEventListener('touchend', (e) => {
-    if (touchStartEl) {
-      touchStartEl.classList.remove('dragging');
-      touchStartEl = null;
+  const onEnd = (e) => {
+    if (!activeRow) return;
+    
+    if (isDragging) {
+      // Find where we hovered, calculate the visual slot indices
+      let hoverIndex = startIndex;
+      const currentY = getClientY(e);
+      for (let k = 0; k < N; k++) {
+        const rect = slotRects[k];
+        const middleY = rect.top + rect.height / 2;
+        if (currentY < middleY) {
+          hoverIndex = k;
+          break;
+        }
+        if (k === N - 1) {
+          hoverIndex = N - 1;
+        }
+      }
+      
+      if (placeholder && placeholder.parentNode) {
+        if (hoverIndex === startIndex) {
+          placeholder.parentNode.insertBefore(activeRow, placeholder);
+        }
+        placeholder.remove();
+      }
+      
+      if (hoverIndex !== startIndex) {
+        if (hoverIndex < startIndex) {
+          container.insertBefore(activeRow, initialSiblings[hoverIndex]);
+        } else {
+          container.insertBefore(activeRow, initialSiblings[hoverIndex].nextSibling);
+        }
+      }
+      
+      activeRow.classList.remove('custom-dragging');
+      activeRow.style.removeProperty('width');
+      activeRow.style.removeProperty('height');
+      activeRow.style.removeProperty('left');
+      activeRow.style.removeProperty('top');
+      
+      initialSiblings.forEach(sib => {
+        sib.style.transform = '';
+      });
+      
+      container.classList.remove('list-dragging');
+      
       renumberPlaceholders();
     }
+    
+    activeRow = null;
+    placeholder = null;
+    isDragging = false;
+    initialSiblings = [];
+    slotRects = [];
+  };
+
+  container.addEventListener('mousedown', (e) => {
+    const row = e.target.closest('.player-input-row');
+    if (row) onStart(e, row);
   });
-}
 
-function getDragAfterElement(container, y) {
-  const draggableElements = [...container.querySelectorAll('.player-input-row:not(.dragging)')];
+  window.addEventListener('mousemove', onMove, { passive: false });
+  window.addEventListener('mouseup', onEnd);
 
-  return draggableElements.reduce((closest, child) => {
-    const box = child.getBoundingClientRect();
-    const offset = y - box.top - box.height / 2;
-    if (offset < 0 && offset > closest.offset) {
-      return { offset: offset, element: child };
-    } else {
-      return closest;
-    }
-  }, { offset: Number.NEGATIVE_INFINITY }).element;
+  container.addEventListener('touchstart', (e) => {
+    const row = e.target.closest('.player-input-row');
+    if (row) onStart(e, row);
+  }, { passive: false });
+
+  window.addEventListener('touchmove', onMove, { passive: false });
+  window.addEventListener('touchend', onEnd);
+  window.addEventListener('touchcancel', onEnd);
 }
 
 function renumberPlaceholders() {

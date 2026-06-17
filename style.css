@@ -633,12 +633,28 @@ p.mode-description strong {
   border-radius: 8px;
   padding: 4px 12px;
   border: 2px solid #e2e8f0;
-  transition: border-color 0.2s ease, opacity 0.2s ease;
+  transition: border-color 0.2s ease, opacity 0.2s ease, transform 0.2s cubic-bezier(0.2, 0, 0, 1);
 }
 
-.player-input-row.dragging {
-  opacity: 0.5;
-  border-style: dashed;
+#players-input-list {
+  position: relative;
+}
+
+.player-input-row-placeholder {
+  visibility: hidden;
+  box-sizing: border-box;
+}
+
+.player-input-row.custom-dragging {
+  position: absolute !important;
+  z-index: 1000 !important;
+  pointer-events: none !important;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+  background-color: var(--color-white);
+  border-color: var(--theme-color);
+  opacity: 0.95;
+  transform: scale(1.02);
+  transition: transform 0.1s ease, box-shadow 0.1s ease;
 }
 
 .drag-handle {
