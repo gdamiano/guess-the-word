@@ -214,23 +214,37 @@
 
         <!-- SCREEN 7/8: Planning / Reveal -->
         <section id="screen-planning" class="screen hidden text-center">
-          <h2 class="screen-title" style="margin-bottom: 20px; color: var(--theme-color-dark);">YOU ARE PLAYING</h2>
-          <p class="mode-description" style="font-size: 1rem; margin-bottom: 24px; padding: 0 10px;">
-            Hold the box below to view your role and instructions.
-          </p>
+          <div class="planning-header">
+            <h2 id="planning-player-name" class="planning-player-title">Player 1,</h2>
+            <p class="planning-subtitle">this is your info!</p>
+          </div>
+
+          <div class="flex-spacer"></div>
+
+          <div class="planning-role-section">
+            <p class="planning-role-lead">You're <span id="planning-role-name" class="redacted">Sheep</span></p>
+            <p id="planning-role-sub" class="planning-role-sub italic">don't tell anyone.</p>
+          </div>
+
+          <div class="flex-spacer"></div>
+
+          <div class="planning-instruction-section">
+            <p id="planning-action-lead" class="planning-action-lead">Say a word related to</p>
+            <p id="planning-action-follow" class="planning-action-follow">this round's secret answer: <span id="planning-secret-word" class="redacted">banana</span></p>
+          </div>
 
           <div class="flex-spacer"></div>
 
           <div id="secret-word-box" class="secret-word-box" style="margin-bottom: 16px;">
             <div id="secret-word-hold-content" class="hold-content">
-              HOLD TO VIEW<br>your secret role
+              HOLD THIS BOX to<br>show your hidden text
             </div>
-            <div id="secret-word-reveal-content" class="reveal-content hidden" style="font-size: 0.95rem; font-weight: 600; color: var(--color-text-body); line-height: 1.4; padding: 0 8px;">
-              <span id="secret-word-display"></span>
+            <div id="secret-word-reveal-content" class="reveal-content hidden">
+              Release to hide
             </div>
           </div>
 
-          <button class="btn btn-primary" id="btn-planning-next" style="width: 100%;">PRESS & PASS THE PHONE</button>
+          <button class="btn btn-primary" id="btn-planning-next" style="width: 100%;">Read your text to continue</button>
         </section>
 
         <!-- SCREEN 8.5: Hand Back to Shepherd -->

@@ -264,14 +264,26 @@ function initSetupPlayers() {
   state.wolvesGuessedWord = false;
   renderPlayerInputs();
   showScreen('setupPlayers');
+  
+  // Focus the first input field and auto-select text if it's default
+  const container = document.getElementById('players-input-list');
+  const firstInp = container.querySelector('.player-input');
+  if (firstInp) {
+    setTimeout(() => {
+      firstInp.focus();
+      if (/^Player \d+$/i.test(firstInp.value)) {
+        firstInp.select();
+      }
+    }, 150);
+  }
 }
 
-function renderPlayerInputs() {
+function renderPlayerInputs(forcedValues = null) {
   document.getElementById('players-count-display').textContent = state.playerCount;
   const container = document.getElementById('players-input-list');
   
   // Retain existing values if possible
-  const currentValues = Array.from(container.querySelectorAll('.player-input')).map(inp => inp.value);
+  const currentValues = forcedValues || Array.from(container.querySelectorAll('.player-input')).map(inp => inp.value);
   container.innerHTML = '';
   
   for (let i = 0; i < state.playerCount; i++) {
@@ -292,6 +304,50 @@ function renderPlayerInputs() {
     inp.placeholder = `Player ${i + 1}`;
     inp.value = val;
     
+    // Enable Next/Done keys on mobile virtual keyboards
+    inp.setAttribute('enterkeyhint', i < state.playerCount - 1 ? 'next' : 'done');
+    
+    // Auto-select value on focus if it matches default pattern "Player #"
+    inp.addEventListener('focus', () => {
+      if (/^Player \d+$/i.test(inp.value)) {
+        setTimeout(() => inp.select(), 50);
+      }
+    });
+    
+    // Shift focus on Enter/Next key press
+    inp.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        const nextRow = row.nextElementSibling;
+        if (nextRow) {
+          const nextInp = nextRow.querySelector('.player-input');
+          if (nextInp) {
+            nextInp.focus();
+          }
+        } else {
+          inp.blur();
+          document.getElementById('btn-setup-players-next').click();
+        }
+      }
+    });
+    
+    // Remove player button
+    const removeBtn = document.createElement('button');
+    removeBtn.className = 'btn-remove-player';
+    removeBtn.textContent = '✖';
+    removeBtn.type = 'button';
+    removeBtn.title = "Remove Player";
+    if (state.playerCount <= 3) {
+      removeBtn.style.visibility = 'hidden';
+      removeBtn.style.pointerEvents = 'none';
+    }
+    removeBtn.addEventListener('click', (e) => {
+      const rowEl = e.target.closest('.player-input-row');
+      const parentEl = rowEl.parentNode;
+      const index = Array.from(parentEl.children).indexOf(rowEl);
+      removePlayer(index);
+    });
+    
     const upBtn = document.createElement('button');
     upBtn.className = 'btn-up-shift';
     upBtn.textContent = '↑';
@@ -306,9 +362,19 @@ function renderPlayerInputs() {
     
     row.appendChild(handle);
     row.appendChild(inp);
+    row.appendChild(removeBtn);
     row.appendChild(upBtn);
     container.appendChild(row);
   }
+}
+
+function removePlayer(idx) {
+  if (state.playerCount <= 3) return;
+  const container = document.getElementById('players-input-list');
+  const currentValues = Array.from(container.querySelectorAll('.player-input')).map(inp => inp.value);
+  currentValues.splice(idx, 1);
+  state.playerCount--;
+  renderPlayerInputs(currentValues);
 }
 
 function makePlayerFirst(idx) {
@@ -548,9 +614,6 @@ function initSetupTopics() {
       });
       container.appendChild(opt);
     });
-  } else {
-    // Reset selections on subsequent rounds
-    Array.from(container.children).forEach(opt => opt.classList.remove('selected'));
   }
   showScreen('setupTopics');
 }
@@ -712,8 +775,28 @@ function initPlanningScreen() {
   const roleKey = state.roles[activePlayer];
   const roleConfig = STRINGS.MODES[state.selectedGame].roles[roleKey];
   
-  // Planning Title is generic "YOU ARE PLAYING" in index.html now (Feedback 15)
-  // Construct the role description + secret word string to show inside the box (Feedback 11/13)
+  // Set player name
+  document.getElementById('planning-player-name').textContent = `${activePlayer},`;
+  
+  // Set role label
+  document.getElementById('planning-role-name').textContent = roleConfig.roleLabel || roleConfig.name || roleKey;
+  
+  // Set role subtext (e.g. "don't tell anyone.")
+  document.getElementById('planning-role-sub').textContent = roleConfig.roleSub || "don't tell anyone.";
+  
+  // You don't need to put the redacted box on the Shepherd or the Main Sheepdog roles.
+  const isPublicRole = (roleKey === 'SHEPHERD' || roleKey === 'SHEEPDOG');
+  const roleNameEl = document.getElementById('planning-role-name');
+  if (isPublicRole) {
+    roleNameEl.classList.remove('redacted');
+  } else {
+    roleNameEl.classList.add('redacted');
+  }
+  
+  // Set gameplay action lead (e.g. "Say a word related to")
+  document.getElementById('planning-action-lead').textContent = roleConfig.actionLead || "Say a word related to";
+  
+  // Set gameplay action follow
   let knowsWord = false;
   if (state.selectedGame === 'MODE_GROUP_GUESSERS') {
     knowsWord = (roleKey === 'FLOCK' || roleKey === 'SHEEPDOG' || roleKey === 'SECRET_SHEEPDOG');
@@ -721,15 +804,14 @@ function initPlanningScreen() {
     knowsWord = (roleKey === 'SHEPHERD' || roleKey === 'WOLF');
   }
   
-  let revealText = `${roleConfig.desc}`;
+  const followLabel = roleConfig.actionFollow || "this round's secret answer:";
+  const followTextEl = document.getElementById('planning-action-follow');
+  
   if (knowsWord) {
-    revealText += ` ${state.secretWord}`;
+    followTextEl.innerHTML = `${followLabel} <span id="planning-secret-word" class="redacted">${state.secretWord}</span>`;
+  } else {
+    followTextEl.innerHTML = `${followLabel} <span id="planning-secret-word" class="redacted">Hidden</span>`;
   }
-  
-  document.getElementById('secret-word-display').textContent = revealText;
-  
-  // All planning screens show the box now (Feedback 13)
-  document.getElementById('secret-word-box').style.display = 'flex';
   
   const box = document.getElementById('secret-word-box');
   if (box && typeof box.resetLock === 'function') {
@@ -740,7 +822,7 @@ function initPlanningScreen() {
 }
 
 // Hold to reveal logic
-function setupSecretWordBox(boxId, revealId, holdId, buttonId, originalText, holdTimeMs) {
+function setupSecretWordBox(boxId, revealId, holdId, buttonId, originalText, lockedText, holdTimeMs) {
   const box = document.getElementById(boxId);
   const reveal = document.getElementById(revealId);
   const hold = document.getElementById(holdId);
@@ -756,16 +838,27 @@ function setupSecretWordBox(boxId, revealId, holdId, buttonId, originalText, hol
     btn.classList.add('btn-filling');
     btn.classList.remove('active-fill');
     btn.style.removeProperty('transition');
-    btn.textContent = "view your secret above";
+    btn.textContent = lockedText;
+    box.classList.remove('box-active');
+    if (boxId === 'secret-word-box') {
+      document.getElementById('screen-planning').classList.remove('secret-revealed');
+    }
   };
 
   const show = (e) => {
     e.preventDefault();
-    hold.classList.add('hidden');
-    reveal.classList.remove('hidden');
+    box.classList.add('box-active');
+    
+    if (boxId !== 'secret-word-box') {
+      hold.classList.add('hidden');
+      reveal.classList.remove('hidden');
+    }
+    
+    if (boxId === 'secret-word-box') {
+      document.getElementById('screen-planning').classList.add('secret-revealed');
+    }
     
     if (!hasUnlocked) {
-      // Set transition duration dynamically in inline styles with !important to match holdTimeMs
       btn.style.setProperty('transition', `background-position ${holdTimeMs / 1000}s linear`, 'important');
       btn.classList.add('active-fill');
       if (holdTimer) clearTimeout(holdTimer);
@@ -781,11 +874,18 @@ function setupSecretWordBox(boxId, revealId, holdId, buttonId, originalText, hol
   
   const hide = (e) => {
     e.preventDefault();
-    hold.classList.remove('hidden');
-    reveal.classList.add('hidden');
+    box.classList.remove('box-active');
+    
+    if (boxId !== 'secret-word-box') {
+      hold.classList.remove('hidden');
+      reveal.classList.add('hidden');
+    }
+    
+    if (boxId === 'secret-word-box') {
+      document.getElementById('screen-planning').classList.remove('secret-revealed');
+    }
     
     if (!hasUnlocked) {
-      // Reset transition instantly to 0% fill
       btn.style.setProperty('transition', 'none', 'important');
       btn.classList.remove('active-fill');
       if (holdTimer) clearTimeout(holdTimer);
@@ -799,8 +899,8 @@ function setupSecretWordBox(boxId, revealId, holdId, buttonId, originalText, hol
   box.addEventListener('mouseleave', hide);
 }
 
-setupSecretWordBox('secret-word-box', 'secret-word-reveal-content', 'secret-word-hold-content', 'btn-planning-next', 'PRESS & PASS THE PHONE', 1000);
-setupSecretWordBox('main-secret-word-box', 'main-secret-word-reveal-content', 'main-secret-word-hold-content', 'btn-main-play-vote', "Let's Vote", 2000);
+setupSecretWordBox('secret-word-box', 'secret-word-reveal-content', 'secret-word-hold-content', 'btn-planning-next', 'Press to continue', 'Read your text to continue', 1000);
+setupSecretWordBox('main-secret-word-box', 'main-secret-word-reveal-content', 'main-secret-word-hold-content', 'btn-main-play-vote', "Let's Vote", 'view your secret above', 2000);
 
 document.getElementById('btn-planning-next').addEventListener('click', () => {
   state.passIndex++;

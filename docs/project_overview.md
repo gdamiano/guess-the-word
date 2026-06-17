@@ -32,20 +32,20 @@ The application is structured as a single-page web app built on standard web tec
 * Player counts inside dropdown limits are displayed with a clean inline vector user silhouette SVG.
 
 ### 2. Player and Category Configuration
-* **Setup Players screen (1/3):** Add and remove players (min 3, max 10) with support for drag-and-drop grab handles (`☰`) and rotation shifts. Displays a helpful banner below the title containing a happy sheep portrait and the text: `"PROTIP: Sit around the room in this order!"`.
+* **Setup Players screen (1/3):** Add and remove players (min 3, max 10) with support for drag-and-drop grab handles (`☰`) and rotation shifts. Displays a helpful banner below the title containing a happy sheep portrait and the text: `"PROTIP: Sit around the room in this order!"`. Includes individual `"✖"` remove buttons on each player row (hidden at the minimum player count of 3) to allow removing players from anywhere in the list. Auto-focuses the first field on screen load, auto-selects default names on click/focus for easy overwrite, and supports mobile virtual keyboard Next/Done hints for smooth field-to-field text entry navigation.
 * **Setup Roles screen (2/3):** Includes an extra, static "Sheep" row at the top of the list displaying a happy sheep portrait. The Sheep count is dynamically calculated as:
   $$\text{Sheep} = \text{Players} - \text{Shepherds} - \text{Wolves} - \text{Sheepdogs} - \text{Secret Sheepdogs}$$
   The row does not have adjustment controls; it dynamically increases or decreases as special roles are added or subtracted.
-* **Setup Topics screen (3/3):** Grid category selector loaded dynamically from [words.js](file:///c:/Users/pogoo/Documents/Cursor/Guess%20The%20Word/words.js), starting unselected by default, featuring 2 columns of centered buttons.
+* **Setup Topics screen (3/3):** Grid category selector loaded dynamically from [words.js](file:///c:/Users/pogoo/Documents/Cursor/Guess%20The%20Word/words.js), starting unselected by default, featuring 2 columns of centered buttons. Selection configurations are preserved on subsequent rounds and scoreboard replays, allowing players to keep their category selections.
 
 ### 3. "Pass & Play" Security Mechanics
 * **Pass The Phone Screen:** Clear directions displaying "I'm [Player Name]" on buttons to ensure only the intended player views their secret.
 * **Dynamic Handoff Sequences:** Hand-to-player sequence generated in a custom array (`state.passSequence`) that guarantees the active Shepherd/Sheepdog leader receives the phone first, followed by remaining players in circle order.
-* **Planning Screen reveal box:** A secure hold-to-reveal area under a generic "YOU ARE PLAYING" title (preventing peeking) showing role descriptions and the secret word (for Shepherd & Wolves) in uniform size and color.
-  * Respects `\n` formatting to allow line breaks inside description text.
-  * Box height is sized at `264px` (accommodating up to 7 lines of text).
-* **Hold-to-Reveal Lock & Animation:** Continue buttons remain disabled and display the text `"view your secret above"` until the box has been held continuously for a specified duration:
-  * **1 second** on the Planning screen ("YOU ARE PLAYING").
+* **Planning Screen reveal layout:** Displays the player name greeting at the top, with the role and secret instructions placed outside the hold box. Sensitive role labels (except for public roles Shepherd & Head Sheepdog) and the secret word/status are covered by solid inline-block redaction blocks.
+  * Redaction spans inherit font weights and families of their parent sentences and align inline naturally when revealed.
+  * The "HOLD THIS BOX" container remains static in text and gets a shaded grey pressed state and slight scaling down when held.
+* **Hold-to-Reveal Lock & Animation:** Next/continue buttons remain disabled and display the text `"Read your text to continue"` until the box has been held continuously for a specified duration:
+  * **1 second** on the Planning screen.
   * **2 seconds** on the Main Play screen.
   * The button fills with the active theme color from left to right using a background-position transition while being held, instantly resetting to 0% if released early.
 * **Transition Handoff:** A hand-back transition screen at the end of the reveal phase instructs the last player to hand the phone back to the Shepherd/Sheepdog before the active round starts.

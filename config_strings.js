@@ -63,6 +63,10 @@ const STRINGS = {
         SHEPHERD: {
           id: "SHEPHERD",
           name: "Shepherd",
+          roleLabel: "the Shepherd",
+          roleSub: "Tell everyone: you're The Shepherd!",
+          actionLead: "Answer yes/no questions about",
+          actionFollow: "this round's secret answer:",
           desc: "Tell everyone: you're The Shepherd!\n\nYou can answer YES OR NO questions about the secret word.\n\nThe secret word is: ",
           instruction: "You know the answer!\nAnswer: ",
           setupDesc: "Answer questions about the secret."
@@ -70,13 +74,21 @@ const STRINGS = {
         FLOCK: {
           id: "FLOCK",
           name: "Sheep",
-		  desc: "You're a regular sheep.\n• Don't tell anyone.\n• Ask one yes/no question ABOUT the secret word.\n• Don't guess the word yet.",
+          roleLabel: "a sheep",
+          roleSub: "don't tell anyone.",
+          actionLead: "Ask a yes/no question about",
+          actionFollow: "this round's secret answer:",
+          desc: "You're a regular sheep.\n• Don't tell anyone.\n• Ask one yes/no question ABOUT the secret word.\n• Don't guess the word yet.",
           instruction: "You're on the team.\nAnswer: Unknown",
           setupDesc: "Discover the secret word."
         },
         WOLF: {
           id: "WOLF",
           name: "Wolf",
+          roleLabel: "a wolf",
+          roleSub: "don't tell anyone.",
+          actionLead: "Ask a yes/no question about",
+          actionFollow: "this round's secret answer:",
           desc: "You're a hidden wolf.\n• Don't tell anyone.\n• Ask one yes/no question ABOUT the secret word.\n• The secret word is: ",
           instruction: "You're a wolf.\nAnswer: ",
           setupDesc: "Fool the team into guessing the wrong word."
@@ -84,14 +96,22 @@ const STRINGS = {
         SHEEPDOG: {
           id: "SHEEPDOG",
           name: "Sheepdog",
-		  desc: "You're the main Sheepdog!\n• Tell everyone you're the Sheepdog.\n• Ask one yes/no question ABOUT the secret word.\n• Don't guess the word yet.",
+          roleLabel: "the Head Sheepdog",
+          roleSub: "Tell everyone you're the Sheepdog.",
+          actionLead: "Ask a yes/no question about",
+          actionFollow: "this round's secret answer:",
+          desc: "You're the main Sheepdog!\n• Tell everyone you're the Sheepdog.\n• Ask one yes/no question ABOUT the secret word.\n• Don't guess the word yet.",
           instruction: "Helps the team and runs votes.",
           setupDesc: "Ask questions, guess the word, run the votes."
         },
         SECRET_SHEEPDOG: {
           id: "SECRET_SHEEPDOG",
           name: "Secret Sheepdog",
-		  desc: "You're a SECRET Sheepdog.\n• Don't tell anyone.\n• Say one word RELATED TO the secret word.\n• The secret word is: ",
+          roleLabel: "a secret sheepdog",
+          roleSub: "don't tell anyone.",
+          actionLead: "Ask a yes/no question about",
+          actionFollow: "this round's secret answer:",
+          desc: "You're a SECRET Sheepdog.\n• Don't tell anyone.\n• Say one word RELATED TO the secret word.\n• The secret word is: ",
           instruction: "Gets one extra guess as to who's a wolf.",
           setupDesc: "Adds an extra vote about Wolves."
         }
@@ -119,6 +139,10 @@ const STRINGS = {
         SHEEPDOG: {
           id: "SHEEPDOG",
           name: "Sheepdog",
+          roleLabel: "the Head Sheepdog",
+          roleSub: "Tell everyone you're the Sheepdog.",
+          actionLead: "Say a word related to",
+          actionFollow: "this round's secret answer:",
           desc: "You're the main Sheepdog!\n• Tell everyone you're the Sheepdog.\n• Say one word RELATED TO the secret word.\n• The secret word is: ",
           instruction: "You know the answer! Start the round by saying a word related to:\nAnswer: ",
           setupDesc: "Help the Sheep guess and vote."
@@ -126,6 +150,10 @@ const STRINGS = {
         FLOCK: {
           id: "FLOCK",
           name: "Sheep",
+          roleLabel: "a sheep",
+          roleSub: "don't tell anyone.",
+          actionLead: "Say a word related to",
+          actionFollow: "this round's secret answer:",
           desc: "You're a regular sheep.\n• Don't tell anyone.\n• Say one word RELATED TO the secret word.\n• The secret word is: ",
           instruction: "You know the answer! When it's your turn, say a word related to:\nAnswer: ",
           setupDesc: "Give word clues, but fool the wolves!"
@@ -133,6 +161,10 @@ const STRINGS = {
         WOLF: {
           id: "WOLF",
           name: "Wolf",
+          roleLabel: "a wolf",
+          roleSub: "don't tell anyone.",
+          actionLead: "Say a word that fits in,",
+          actionFollow: "this round's secret answer:",
           desc: "You're a hidden wolf.\n• Don't tell anyone.\n• Say one word that SOUNDS LIKE the other players' words.\n• Try to blend in: fake it!",
           instruction: "You're the wolf. You DON'T know the word! Listen to others and say a word that fits in.\nAnswer: Unknown",
           setupDesc: "Blend in by saying a word that fits, then guess the secret word."
@@ -140,6 +172,10 @@ const STRINGS = {
         SECRET_SHEEPDOG: {
           id: "SECRET_SHEEPDOG",
           name: "Secret Sheepdog",
+          roleLabel: "a secret sheepdog",
+          roleSub: "don't tell anyone.",
+          actionLead: "Say a word related to",
+          actionFollow: "this round's secret answer:",
           desc: "You're a SECRET Sheepdog.\n• Don't tell anyone.\n• Say one word RELATED TO the secret word.\n• The secret word is: ",
           instruction: "Gets one extra guess as to who's a wolf.",
           setupDesc: "Helps the team, adds one extra guess about wolves."
